@@ -1,0 +1,29 @@
+name: Publish VoldeNuit
+
+on:
+  workflow_dispatch:
+
+jobs:
+  build_and_publish_csharp:
+    runs-on: ubuntu-latest
+    env:
+      NUGET_TOKEN: ${{ secrets.VOLDENUIT_UPLOAD_KEY }}
+      PROJECT_NAME: VoldeNuit
+
+    steps:
+      - name: Check repository
+        uses: actions/checkout@v3
+
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v1
+        with:
+          dotnet-version: 8.0.407
+
+      - name: Build
+        run: |
+          dotnet build -c Release "./${{ env.PROJECT_NAME }}"
+
+      - name: Publish
+        run: |
+          dotnet pack -c Release "./${{ env.PROJECT_NAME }}"
+          dotnet nuget push ./${{ env.PROJECT_NAME }}/bin/Release/${{ env.PROJECT_NAME }}.*.nupkg --source https://api.nuget.org/v3/index.json --api-key $NUGET_TOKEN

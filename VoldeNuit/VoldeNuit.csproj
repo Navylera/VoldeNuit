@@ -1,0 +1,38 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+    <NoWarn>IDE1006,IDE0090,IDE0054</NoWarn>
+    <Deterministic>false</Deterministic>
+
+    <PackageId>VoldeNuit.Framework</PackageId>
+    <PackageVersion>1.0.0.0</PackageVersion>
+    <Description>UNOFFICIAL additional framework of the MonoGameFramework</Description>
+    <PackageTags>VoldeNuit;VoldeNuitFramework;MonoGame;</PackageTags>
+    <PackageProjectUrl>https://github.com/Navylera/VoldeNuit</PackageProjectUrl>
+    <RepositoryUrl>https://github.com/Navylera/VoldeNuit</RepositoryUrl>
+    <Copyright>Copyright © 2025 Navylera.</Copyright>
+    <Authors>Navylera</Authors>
+    <PackageReadmeFile>README.md</PackageReadmeFile>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Magick.NET-Q8-AnyCPU" Version="14.8.0" />
+    <PackageReference Include="MonoGame.Framework.DesktopGL" Version="3.8.1.303" />
+
+    <EmbeddedResource Include="Framework/Preload/DefaultFont/Galmuri9.ttf_font_texture_0.png" />
+    <EmbeddedResource Include="Framework/Preload/DefaultFont/Galmuri9.ttf_font_texture_1.png" />
+    <EmbeddedResource Include="Framework/Preload/DefaultFont/Galmuri9.ttf_data" />
+
+    <EmbeddedResource Include="Framework/Preload/VoldeNuit.png" />
+
+    <None Include="README.md">
+      <Pack>True</Pack>
+      <PackagePath>\</PackagePath>
+    </None>
+
+  </ItemGroup>
+
+</Project>
