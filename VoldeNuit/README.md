@@ -1,9 +1,4 @@
 <!-- README for NuGet -->
-
-</br>
-
-<p align="center"><img src="./VoldeNuit.webp"></p>
-
 # VoldeNuitFramework
 
 VoldeNuitFramework is an **UNOFFICIAL** additional framework of the
@@ -27,4 +22,4 @@ It's very helpful for maintenance!
 # Support
 If this Framework is useful, consider supporting through donate. It is a great help to development!
 
-<a href='https://ko-fi.com/V7V71KA6S8' target='_blank'><img height='36' style='border:0px;height:36px;' src='https://storage.ko-fi.com/cdn/kofi4.png?v=6' border='0' alt='Buy Me a Coffee at ko-fi.com' /></a>
+<https://ko-fi.com/navylera>
