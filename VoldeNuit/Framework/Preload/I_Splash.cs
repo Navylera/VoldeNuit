@@ -35,7 +35,7 @@ internal class I_Splash: Instance {
 
     internal float progressindex = 0f;
 
-    internal string version = "1.0.0.0";
+    internal string version = "1.0.1.0";
 
     internal RenderTarget2D message_white = new RenderTarget2D(
         _graphicsDeviceManager.GraphicsDevice, 240, 11
