@@ -257,7 +257,12 @@ internal class I_Splash: Instance {
 
         draw_rectangle(x-120, y+50, 240, 14, true);
 
-        int progress = 240*(progresscount/taskcount);
+        int progress = 240;
+
+        if (taskcount > 0) {
+            
+            progress = 240*(progresscount/taskcount);
+        }
 
         draw_rectangle(x-120, y+51, progress, 13, false);
 
