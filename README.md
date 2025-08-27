@@ -10,7 +10,25 @@ VoldeNuitFramework is an **UNOFFICIAL** additional framework of the
 
 # Features
 
+Basic concepts like Sprite, Instance, Rooms, etc. have been implemented to make MonoGame easier to use.
 
+- Sprite
+- - If the extension of your texture file is .png or .xnb, it is automatically tracked and loaded.
+
+- Instance
+- - You can easily manage the Instance by inheriting the default Instance class.
+- - Basic movement calculation and collision check are provided.
+
+- Drawing
+- - Drawing methods make it easy to display Sprite and textures on the screen.
+
+- Room
+- - Basic Camera, View and Viewport are provided.
+- - By creating the Instance, it is automatically tracked and managed.
+
+... and more!
+
+# Getting Started
     
 To start the Monogame project, please visit the
  [following page](https://docs.monogame.net/articles/getting_started/index.html).
