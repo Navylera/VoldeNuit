@@ -8,12 +8,17 @@ VoldeNuitFramework is an **UNOFFICIAL** additional framework of the
  [MonoGameFramework](https://monogame.net/)
  start for the migration of Gamemaker:Studio < 2.  
 
+</br></br>
+
 # Features
 
 Basic concepts like Sprite, Instance, Rooms, etc. have been implemented to make MonoGame easier to use.
 
 - Sprite
     - If the extension of your texture file is .png or .xnb, it is automatically tracked and loaded.
+
+- Font
+    - If you have a font file, the font texture is automatically created, and it can be used in the game immediately.
 
 - Instance
     - You can easily manage the Instance by inheriting the default Instance class.
@@ -27,6 +32,8 @@ Basic concepts like Sprite, Instance, Rooms, etc. have been implemented to make 
     - By creating the Instance, it is automatically tracked and managed.
 
 ... and more!
+
+</br></br>
 
 # Getting Started
     
