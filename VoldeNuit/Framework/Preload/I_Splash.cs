@@ -1,5 +1,6 @@
 using System.Runtime.InteropServices;
 using System.Text;
+using System.Reflection;
 
 using Microsoft.Xna.Framework.Graphics;
 
@@ -19,10 +20,12 @@ using static Draw;
 
 internal class I_Splash: Instance {
 
+    internal Assembly assembly;
+
     internal string message = "Searching for class files...";
 
-    internal int taskcount = 0;
-    internal int progresscount = 0;
+    internal int tcount = 0;
+    internal static int pcount { get; set; } = 0;
 
     internal float alpha = 0;
 
@@ -57,6 +60,10 @@ internal class I_Splash: Instance {
 
         draw_set_font(new DefaultFont.DefaultFont());
 
+        //TODO: Indicate Assembly directory when import manually
+
+        assembly = Assembly.LoadFrom($"{projectname}.dll");
+
         _splash();
     }
 
@@ -66,7 +73,7 @@ internal class I_Splash: Instance {
 
             completeset = true;
 
-            foreach (Sprite s in _sprite) { _ = s.texture; }
+            foreach (Sprite s in _sprite) { Console.WriteLine("!"+s.GetType()); _ = s.texture; }
 
             foreach (Font f in _font) { f._update_texture(); }
         }
@@ -133,117 +140,116 @@ internal class I_Splash: Instance {
             }
         }
 
-        List<Task> spritetask = [];
+        List<Type> types = [..assembly.GetTypes().Where(t => t.IsClass)];
 
-        await _search($"{sbuilder}SpriteClass", spritetask, split);
+        Dictionary<string, string> dsprite = [];
+        Dictionary<string, string> dsound = [];
 
-        List<Task> fonttask = [];
+        List<Type> spritetypes = [..types.Where(t => t.BaseType == typeof(Sprite))];
+        List<Type> fonttypes   = [..types.Where(t => t.BaseType == typeof(Font))];
+        List<Type> soundtypes  = [..types.Where(t => t.BaseType == typeof(Sound))];
 
-        await _search($"{sbuilder}FontClass", fonttask, split);
+        _traversal(dsprite, $"{sbuilder}Sprite", "png");
+        _traversal(dsound, $"{sbuilder}Sound", "wav");
 
-        List<Task> soundtask = [];
-
-        await _search($"{sbuilder}SoundClass", soundtask, split);
-
-        taskcount = spritetask.Count+fonttask.Count+soundtask.Count;
+        tcount = spritetypes.Count+fonttypes.Count+soundtypes.Count;
 
         message = "Loading Textures...";
 
-        while (spritetask.Count > 0) {
-
-            spritetask.Remove(await Task.WhenAny(spritetask));
-            
-            progresscount = progresscount+1;
-        }
+        await _sprpreload(dsprite, spritetypes);
 
         message = "Loading Fonts...";
 
-        while (fonttask.Count > 0) {
-
-            fonttask.Remove(await Task.WhenAny(fonttask));
-
-            progresscount = progresscount+1;
-        }
+        await _fntpreload(fonttypes);
 
         message = "Loading Sounds...";
 
-        while (soundtask.Count > 0) {
-
-            soundtask.Remove(await Task.WhenAny(soundtask));
-
-            progresscount = progresscount+1;
-        }
+        await _sndpreload(dsound, soundtypes);
 
         completeload = true;
 
         message = "Finishing Tasks...";
     }
 
-    private static async Task _search(string directory, List<Task> ltask, char split) {
+    private static void _traversal(Dictionary<string, string> dictionary, string directory, string ext) {
 
-        string[] array_classes = Directory.GetFiles(directory);
+        string[] directories = Directory.GetFiles(directory);
         
-        foreach (string s in array_classes) {
+        foreach (string s in directories) {
 
-            if (s[^2..] != "cs") { continue; }
+            if (s[^3..] == ext) {
 
-            string classname = s[(directory.Length+1)..^3];
-
-            ltask.Add(_preload(directory, classname, split));
+                string classname = s[(directory.Length+1)..^3];
+                
+                dictionary.Add(classname, s);
+            }
         }
 
         string[] array_directories = Directory.GetDirectories(directory);
 
         foreach (string d in array_directories) {
 
-            await _search(d, ltask, split);
+            _traversal(dictionary, d, ext);
         }
     }
 
-    private static async Task _preload(string directory, string classname, char split) {
+    private static async Task _sprpreload(Dictionary<string, string> dictionary, List<Type> types) {
 
         await Task.Run(() => {
 
-            switch (Type.GetType($".{classname}, {projectname}")) {
+            foreach (Type t in types) {
 
-                case Type t when t.BaseType == typeof(Sprite): {
+                if (dictionary.TryGetValue(t.Name, out string path)) {
 
                     Sprite? _s = (Sprite?)Convert.ChangeType(Activator.CreateInstance(t), t);
 
-                    if (_s == null) { break; }
+                    if (_s == null) { pcount = pcount+1; continue; }
 
-                    _s._preload($"{directory}{split}{classname}");
+                    _s._preload($"{path}");
 
                     _sprite.Add(_s);
-
-                    break;
                 }
+                
+                pcount = pcount+1;
+            }
+        });
+    }
 
-                case Type t when t.BaseType == typeof(Font): {
+    private static async Task _fntpreload(List<Type> types) {
 
-                    Font? _f = (Font?)Convert.ChangeType(Activator.CreateInstance(t), t);
+        await Task.Run(() => {
 
-                    if (_f == null) { break; }
+            foreach (Type t in types) {
 
-                    _f._init_font(_f.name, _f.size_font, _f.range);
+                Font? _f = (Font?)Convert.ChangeType(Activator.CreateInstance(t), t);
 
-                    _font.Add(_f);
+                if (_f == null) { pcount = pcount+1; continue; }
 
-                    break;
-                }
+                _f._init_font(_f.name, _f.size_font, _f.range);
 
-                case Type t when t.BaseType == typeof(Sound): {
+                _font.Add(_f);
+
+                pcount = pcount+1;
+            }
+        });
+    }
+
+    private static async Task _sndpreload(Dictionary<string, string> dictionary, List<Type> types) {
+
+        await Task.Run(() => {
+
+            foreach (Type t in types) {
+
+                if (dictionary.TryGetValue(t.Name, out string path)) {
 
                     Sound? _s = (Sound?)Convert.ChangeType(Activator.CreateInstance(t), t);
 
-                    if (_s == null) { break; }
-
-                    // ret = true;
+                    if (_s == null) { pcount = pcount+1; continue; }
 
                     _sound.Add(_s);
-
-                    break;
                 }
+                
+                pcount = pcount+1;
             }
         });
     }
@@ -259,9 +265,9 @@ internal class I_Splash: Instance {
 
         int progress = 240;
 
-        if (taskcount > 0) {
+        if (tcount > 0) {
             
-            progress = 240*(progresscount/taskcount);
+            progress = 240*(pcount/tcount);
         }
 
         draw_rectangle(x-120, y+51, progress, 13, false);

@@ -25,23 +25,19 @@ public partial class Sprite {
         _disposed = true; return;
     }
 
+    //TODO: Cache not updated when not preloaded
+
     internal byte[] _cache_partial_texture;
 
     internal bool _flag_cache_modified = false;
 
     internal bool _preloaded = false;
 
-    internal void _preload(string path_target) {
+    internal void _preload(string imagepath) {
 
-        string tpath = path_target.Replace("Class", "")+".png";
+        if (_preloaded) { return; }
 
-        if (!File.Exists($"{path_target}.cs") ||
-            !File.Exists(tpath)) { 
-            
-            return;
-        }
-
-        using MagickImage image = new MagickImage(tpath, MagickFormat.Png);
+        using MagickImage image = new MagickImage(imagepath, MagickFormat.Png);
 
         using IPixelCollection<byte> pdata = image.GetPixels();
 
