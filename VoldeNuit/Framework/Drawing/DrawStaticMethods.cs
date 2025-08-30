@@ -243,8 +243,6 @@ public static partial class Draw {
     
     public static void draw_set_valign(int valign) { Draw.valign = valign; }
 
-    // TODO: Drawing text to texture (Surface)
-
     public static void draw_text(float x, float y, string text, 
                                  float xscale = 1f, float yscale = 1f, float angle = 0f) {
 
