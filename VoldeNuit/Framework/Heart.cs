@@ -1,3 +1,5 @@
+using System.Reflection;
+
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Audio;
@@ -107,6 +109,8 @@ public static partial class Heart {
 
     internal static string projectname = null;
 
+    internal static Assembly assembly = null;
+
     internal static Progress _progress = Progress.BEGIN_STEP;
 
     internal enum Progress {
@@ -124,6 +128,24 @@ public static partial class Heart {
     public static void InitMonoGameEnvironment(string projectName, Game game, GraphicsDeviceManager gdeviceManager) { 
         
         Heart.projectname = projectName;
+
+        _main = game;
+
+        window = game.Window;
+
+        _graphicsDeviceManager = gdeviceManager;
+
+        _primitive = new Texture2D(gdeviceManager.GraphicsDevice, 1, 1);
+        _primitive.SetData(new byte[] { 255, 255, 255, 255 } );
+
+        if (listener.Count == 0) { listener.Add(new Listener()); }
+
+        room_goto(typeof(Preload.R_Splash));
+    }
+
+    public static void InitMonoGameEnvironment(Assembly assembly, Game game, GraphicsDeviceManager gdeviceManager) { 
+        
+        Heart.assembly = assembly;
 
         _main = game;
 

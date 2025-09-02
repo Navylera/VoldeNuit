@@ -60,9 +60,9 @@ internal class I_Splash: Instance {
 
         draw_set_font(new DefaultFont.DefaultFont());
 
-        //TODO: Indicate Assembly directory when import manually
+        //TODO: Update documentation
 
-        assembly = Assembly.LoadFrom($"{projectname}.dll");
+        assembly = Heart.assembly;
 
         _splash();
     }
@@ -73,7 +73,7 @@ internal class I_Splash: Instance {
 
             completeset = true;
 
-            foreach (Sprite s in _sprite) { Console.WriteLine("!"+s.GetType()); _ = s.texture; }
+            foreach (Sprite s in _sprite) { _ = s.texture; }
 
             foreach (Font f in _font) { f._update_texture(); }
         }
@@ -179,8 +179,8 @@ internal class I_Splash: Instance {
 
             if (s[^3..] == ext) {
 
-                string classname = s[(directory.Length+1)..^3];
-                
+                string classname = s[(directory.Length+1)..^4];
+
                 dictionary.Add(classname, s);
             }
         }
@@ -208,6 +208,8 @@ internal class I_Splash: Instance {
                     _s._preload($"{path}");
 
                     _sprite.Add(_s);
+
+                    Console.WriteLine($"{t.Name} Loaded");
                 }
                 
                 pcount = pcount+1;

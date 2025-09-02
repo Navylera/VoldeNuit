@@ -25,11 +25,9 @@ public partial class Sprite {
         _disposed = true; return;
     }
 
-    //TODO: Cache not updated when not preloaded
-
     internal byte[] _cache_partial_texture;
 
-    internal bool _flag_cache_modified = false;
+    internal bool _flag_cache_modified = true;
 
     internal bool _preloaded = false;
 
@@ -41,7 +39,11 @@ public partial class Sprite {
 
         using IPixelCollection<byte> pdata = image.GetPixels();
 
+        // TODO: texture not loaded properly
+
         _cache_partial_texture = pdata.ToByteArray(PixelMapping.RGBA);
+
+        _flag_cache_modified = false;
 
         if (_sprite_height == -1) { _sprite_height = (int)image.Height; }
 
