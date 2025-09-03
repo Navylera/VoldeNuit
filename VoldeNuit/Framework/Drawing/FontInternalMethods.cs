@@ -17,7 +17,7 @@ using static Draw;
 
 public partial class Font {
 
-    private static bool _is_sqr (char c) {
+    internal static bool _is_sqr (char c) {
 
         // 0xac00  ~ 0xd7a3     Hangul Syllables
         // 0x2e80  ~ 0x2eff     CJK Radicals Supplement
@@ -116,54 +116,18 @@ public partial class Font {
 
         int isize_font = (int)size_font;
 
-        char split = '/';
-
         StringBuilder sbuilder = new StringBuilder();     
 
-        bool definded = false;
+        sbuilder.Clear().Append(CONTENT_PATH);
 
-        if (RuntimeInformation.IsOSPlatform(OSPlatform.Linux)) {
-
-            sbuilder.Clear().Append(CONTENT_PATH_LINUX);
-
-            if (CONTENT_PATH_LINUX[^1] != '/') {
-
-                sbuilder.Append('/');
-            }
-            
-            sbuilder.Append("Font/"); definded = true;
-        }
-
-        if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows)) {
-
-            split = '\\';
-
-            sbuilder.Clear().Append(CONTENT_PATH_WINDOWS);
-
-            if (CONTENT_PATH_WINDOWS[^1] != '\\') {
-
-                sbuilder.Append('\\');
-            }
-            
-            sbuilder.Append("Font\\"); definded = true;
-        }
-
-        if (!definded) {
-
-            sbuilder.Clear().Append(CONTENT_PATH_OTHERS);
-
-            if (CONTENT_PATH_OTHERS[^1] != '/') {
-
-                sbuilder.Append('/');
-            }
-            
-            sbuilder.Append("Font/");
-        }
+        if (CONTENT_PATH[^1] != separator) { sbuilder.Append(separator); }
+        
+        sbuilder.Append($"Font{separator}");
 
         _path = sbuilder.ToString();
 
-        string file_name_metadata = $"{_path}{split}{name}_metadata";
-        string file_name_data     = $"{_path}{split}{name}_data";
+        string file_name_metadata = $"{_path}{separator}{name}_metadata";
+        string file_name_data     = $"{_path}{separator}{name}_data";
 
         bool flag_modify_needed = false;
 
@@ -211,13 +175,15 @@ public partial class Font {
             // [0]font_name
             // [1]font_size
             // [2]texture_page_count
-            // [3]string_hash
+            // [3]version
+            // [4]string_hash
 
-            if (array_metadata.Length < 4) { flag_modify_needed = true; break; }
+            if (array_metadata.Length < 5) { flag_modify_needed = true; break; }
 
             if (array_metadata[0] != name ||
                 array_metadata[1] != size_font.ToString() ||
-                array_metadata[3] != string_hash) {
+                array_metadata[3] != version ||
+                array_metadata[4] != string_hash) {
 
                 flag_modify_needed = true; break;
             }
@@ -506,9 +472,10 @@ public partial class Font {
         // [0]font_name
         // [1]font_size
         // [2]texture_page_count
-        // [3]string_hash
+        // [3]version
+        // [4]string_hash
 
-        sbuilder.Append($"{name} {size_font} {_page} {string_hash}");
+        sbuilder.Append($"{name} {size_font} {_page} {version} {string_hash}");
 
         string metadata = sbuilder.ToString();
 
