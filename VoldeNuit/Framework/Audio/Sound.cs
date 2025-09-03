@@ -55,9 +55,9 @@ public partial class Sound {
         set { _sfx?.Dispose(); _sfx = value; }
     }
 
-    private static SoundEffect? _load_sfx(string directory, string target, char split) {
+    private static SoundEffect? _load_sfx(string directory, string target) {
 
-        string path_target = directory+split+target;
+        string path_target = directory+separator+target;
 
         if (File.Exists($"{path_target}.xnb")) { 
             
@@ -77,7 +77,7 @@ public partial class Sound {
 
             if (ret != null) { break; }
 
-            ret = ret?? _load_sfx(d, target, split);
+            ret = ret?? _load_sfx(d, target);
         }
 
         return ret;
@@ -85,51 +85,15 @@ public partial class Sound {
 
     internal static SoundEffect? load_sfx(string name_file) {
 
-        char split = '/';
-
         StringBuilder sbuilder = new StringBuilder();
 
-        bool definded = false;
+        sbuilder.Clear().Append(CONTENT_PATH);
 
-        if (RuntimeInformation.IsOSPlatform(OSPlatform.Linux)) {
+        if (CONTENT_PATH[^1] != separator) { sbuilder.Append(separator); }
+        
+        sbuilder.Append("Sound");
 
-            sbuilder.Clear().Append(CONTENT_PATH_LINUX);
-
-            if (CONTENT_PATH_LINUX[^1] != '/') {
-
-                sbuilder.Append('/');
-            }
-            
-            sbuilder.Append("Sound"); definded = true;
-        }
-
-        if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows)) {
-
-            split = '\\';
-
-            sbuilder.Clear().Append(CONTENT_PATH_WINDOWS);
-
-            if (CONTENT_PATH_WINDOWS[^1] != '\\') {
-
-                sbuilder.Append('\\');
-            }
-            
-            sbuilder.Append("Sound"); definded = true;
-        }
-
-        if (!definded) {
-
-            sbuilder.Clear().Append(CONTENT_PATH_OTHERS);
-
-            if (CONTENT_PATH_LINUX[^1] != '/') {
-
-                sbuilder.Append('/');
-            }
-            
-            sbuilder.Append("Sound");
-        }
-
-        SoundEffect? sfx = _load_sfx(sbuilder.ToString(), name_file, split);
+        SoundEffect? sfx = _load_sfx(sbuilder.ToString(), name_file);
 
         if (sfx == null) { _stacktrace(ExConstants.SOUND_NOT_ACCESSABLE); return null; }
 
