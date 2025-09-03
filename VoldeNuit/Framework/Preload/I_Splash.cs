@@ -38,8 +38,6 @@ internal class I_Splash: Instance {
 
     internal float progressindex = 0f;
 
-    internal string version = "1.0.1.1";
-
     internal RenderTarget2D message_white = new RenderTarget2D(
         _graphicsDeviceManager.GraphicsDevice, 240, 11
     );
@@ -59,8 +57,6 @@ internal class I_Splash: Instance {
         image_speed = 0.3f;
 
         draw_set_font(new DefaultFont.DefaultFont());
-
-        //TODO: Update documentation
 
         assembly = Heart.assembly;
 
@@ -104,41 +100,11 @@ internal class I_Splash: Instance {
 
     internal async void _splash() {
 
-        char split = '/';
-
         StringBuilder sbuilder = new StringBuilder();
 
-        bool definded = false;
+        sbuilder.Clear().Append(CONTENT_PATH);
 
-        if (RuntimeInformation.IsOSPlatform(OSPlatform.Linux)) {
-
-            sbuilder.Clear().Append(CONTENT_PATH_LINUX);
-
-            if (CONTENT_PATH_LINUX[^1] != '/') { sbuilder.Append('/'); }
-            
-            definded = true;
-        }
-
-        if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows)) {
-
-            split = '\\';
-
-            sbuilder.Clear().Append(CONTENT_PATH_WINDOWS);
-
-            if (CONTENT_PATH_WINDOWS[^1] != '\\') { sbuilder.Append('\\'); }
-            
-            definded = true;
-        }
-
-        if (!definded) {
-
-            sbuilder.Clear().Append(CONTENT_PATH_OTHERS);
-
-            if (CONTENT_PATH_LINUX[^1] != '/') {
-
-                sbuilder.Append('/');
-            }
-        }
+        if (CONTENT_PATH[^1] != separator) { sbuilder.Append(separator); }
 
         List<Type> types = [..assembly.GetTypes().Where(t => t.IsClass)];
 
