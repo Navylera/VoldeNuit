@@ -1,5 +1,7 @@
 namespace VoldeNuit.Framework;
 
+using static Heart;
+
 public static class Configuration {
 
     internal static int QTREE_MINSIZE { get; set; } = 8;
@@ -26,7 +28,5 @@ public static class Configuration {
         LEGACY
     }
 
-    public static string CONTENT_PATH_LINUX { get; set; } = "./Content/";
-    public static string CONTENT_PATH_WINDOWS { get; set; } = ".\\Content\\";
-    public static string CONTENT_PATH_OTHERS { get; set; } = "./Content/";
+    public static string CONTENT_PATH { get; set; } = $".{separator}Content{separator}";
 }
