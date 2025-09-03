@@ -107,9 +107,11 @@ public static partial class Heart {
 
     internal static (int width, int height, Type point) _entry;
 
-    internal static string projectname = null;
-
     internal static Assembly assembly = null;
+
+    internal static char separator = Path.DirectorySeparatorChar;
+
+    internal static string version = "2.0.0";
 
     internal static Progress _progress = Progress.BEGIN_STEP;
 
@@ -125,24 +127,6 @@ public static partial class Heart {
     }
     
     // Core functions
-    public static void InitMonoGameEnvironment(string projectName, Game game, GraphicsDeviceManager gdeviceManager) { 
-        
-        Heart.projectname = projectName;
-
-        _main = game;
-
-        window = game.Window;
-
-        _graphicsDeviceManager = gdeviceManager;
-
-        _primitive = new Texture2D(gdeviceManager.GraphicsDevice, 1, 1);
-        _primitive.SetData(new byte[] { 255, 255, 255, 255 } );
-
-        if (listener.Count == 0) { listener.Add(new Listener()); }
-
-        room_goto(typeof(Preload.R_Splash));
-    }
-
     public static void InitMonoGameEnvironment(Assembly assembly, Game game, GraphicsDeviceManager gdeviceManager) { 
         
         Heart.assembly = assembly;
