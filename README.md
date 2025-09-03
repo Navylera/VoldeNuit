@@ -31,6 +31,10 @@ Basic concepts like Sprite, Instance, Rooms, etc. have been implemented to make 
     - Basic Camera, View and Viewport are provided.
     - By creating the Instance, it is automatically tracked and managed.
 
+- Sound
+    - If the extension of your audio file is .wav or .xnb, it is automatically tracked and loaded.
+    - 3D audio effects are provided.
+
 ... and more!
 
 </br></br>
