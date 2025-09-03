@@ -39,9 +39,18 @@ public partial class Sprite {
 
         using IPixelCollection<byte> pdata = image.GetPixels();
 
-        // TODO: texture not loaded properly
-
         _cache_partial_texture = pdata.ToByteArray(PixelMapping.RGBA);
+
+        // If alpha == 0 => clear all RGB data
+
+        for (int i=3; i<_cache_partial_texture.Length; i=i+4) {
+            
+            if (_cache_partial_texture[i] != 0) { continue; }
+
+            _cache_partial_texture[i-1] = 0;
+            _cache_partial_texture[i-2] = 0;
+            _cache_partial_texture[i-3] = 0;
+        }
 
         _flag_cache_modified = false;
 
@@ -60,14 +69,27 @@ public partial class Sprite {
                                           (int)image.Width, (int)image.Height
         );
 
+        byte[] parray = pdata.ToByteArray(PixelMapping.RGBA);
+
+        // If alpha == 0 => clear all RGB data
+
+        for (int i=3; i<parray.Length; i=i+4) {
+            
+            if (parray[i] != 0) { continue; }
+
+            parray[i-1] = 0;
+            parray[i-2] = 0;
+            parray[i-3] = 0;
+        }
+
         texture.SetData(pdata.ToByteArray(PixelMapping.RGBA));
 
         return texture;
     }
 
-    private static Texture2D _load_texture(string directory, string target, char split) {
+    private static Texture2D _load_texture(string directory, string target) {
 
-        string path_target = directory+split+target;
+        string path_target = directory+separator+target;
         
         if (File.Exists($"{path_target}.xnb")) { return _main.Content.Load<Texture2D>($"{path_target}.xnb"); }
 
@@ -81,7 +103,7 @@ public partial class Sprite {
 
             if (ret != null) { break; }
 
-            ret = ret?? _load_texture(d, target, split);
+            ret = ret?? _load_texture(d, target);
         }
 
         return ret;
@@ -89,51 +111,15 @@ public partial class Sprite {
 
     internal static Texture2D load_texture(string name_file) {
 
-        char split = '/';
-
         StringBuilder sbuilder = new StringBuilder();     
 
-        bool definded = false;
+        sbuilder.Clear().Append(CONTENT_PATH);
 
-        if (RuntimeInformation.IsOSPlatform(OSPlatform.Linux)) {
+        if (CONTENT_PATH[^1] != separator) { sbuilder.Append(separator); }
+        
+        sbuilder.Append("Sprite");
 
-            sbuilder.Clear().Append(CONTENT_PATH_LINUX);
-
-            if (CONTENT_PATH_LINUX[^1] != '/') {
-
-                sbuilder.Append('/');
-            }
-            
-            sbuilder.Append("Sprite"); definded = true;
-        }
-
-        if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows)) {
-
-            split = '\\';
-
-            sbuilder.Clear().Append(CONTENT_PATH_WINDOWS);
-
-            if (CONTENT_PATH_WINDOWS[^1] != '\\') {
-
-                sbuilder.Append('\\');
-            }
-            
-            sbuilder.Append("Sprite"); definded = true;
-        }
-
-        if (!definded) {
-
-            sbuilder.Clear().Append(CONTENT_PATH_OTHERS);
-
-            if (CONTENT_PATH_OTHERS[^1] != '/') {
-
-                sbuilder.Append('/');
-            }
-            
-            sbuilder.Append("Sprite");
-        }
-
-        return _load_texture(sbuilder.ToString(), name_file, split);
+        return _load_texture(sbuilder.ToString(), name_file);
     }
 
     internal byte[] this[float i] {
