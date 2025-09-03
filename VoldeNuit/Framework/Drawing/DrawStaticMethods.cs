@@ -409,11 +409,15 @@ public static partial class Draw {
 
             Texture2D texture = array_texture[value>>30&0x3];
 
+            int _height = font_current._vmod;
+            
+            if (Font._is_sqr(c)) { _height = (int)font_current.size_font; }
+
             drawdata = new DrawData(texture, xpos, ypos, xscale, yscale,
                                     new Rectangle((int)(value>>11&0x7ff), 
                                                   (int)(value&0x7ff), 
                                                   (int)(value>>22&0xff), 
-                                                  font_current._vmod)) {
+                                                  _height)) {
                            vx = 0, vy = 0, angle = angle, color = color
             };
 
@@ -618,11 +622,15 @@ public static partial class Draw {
 
             Texture2D texture = array_texture[value>>30&0x3];
 
+            int _height = font_current._vmod;
+            
+            if (Font._is_sqr(c)) { _height = (int)font_current.size_font; }
+
             drawdata = new DrawData(texture, xpos, ypos, xscale, yscale,
                                     new Rectangle((int)(value>>11&0x7ff), 
                                                   (int)(value&0x7ff), 
                                                   (int)(value>>22&0xff), 
-                                                  font_current._vmod)) {
+                                                  _height)) {
                            vx = 0, vy = 0, angle = angle, color = color
             };
 
