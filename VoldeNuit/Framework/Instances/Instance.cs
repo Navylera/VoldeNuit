@@ -134,7 +134,7 @@ public abstract partial class Instance {
         }
     }
 
-    public float _friction = 0f;
+    private float _friction = 0f;
     public float friction {
 
         get => _friction;
@@ -198,7 +198,7 @@ public abstract partial class Instance {
     public float image_index = 0f;
     public float image_speed = 1f;
 
-    public float _image_angle = 0f;
+    private float _image_angle = 0f;
     public float image_angle {
 
         get {
