@@ -209,14 +209,12 @@ public static partial class Heart {
         _beat_copy = [.._instance_id.OrderByDescending(i => i.depth)];
 
         _progress = Progress.BEGIN_DRAW;
-
         foreach (Instance instance in _beat_copy) { 
 
             instance.Begin_Draw(); 
         }
 
         _progress = Progress.DRAW;
-
         foreach (Instance instance in _beat_copy) { 
 
             instance.Draw(); 
