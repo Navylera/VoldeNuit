@@ -27,6 +27,11 @@ public static partial class Heart {
 
     internal static GraphicsDeviceManager _graphicsDeviceManager;
 
+    public static GraphicsDevice graphicsDevice {
+
+        get => _graphicsDeviceManager.GraphicsDevice;
+    }
+
     internal static List<Instance> _beat_copy = [];
 
     internal static readonly HashSet<Instance> _instance_id = [];
