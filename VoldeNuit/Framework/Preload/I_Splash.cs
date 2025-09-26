@@ -173,8 +173,6 @@ internal class I_Splash: Instance {
                     _s._preload($"{path}");
 
                     _sprite.Add(_s);
-
-                    Console.WriteLine($"{t.Name} Loaded");
                 }
                 
                 pcount = pcount+1;
