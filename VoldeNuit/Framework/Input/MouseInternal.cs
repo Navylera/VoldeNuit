@@ -8,13 +8,20 @@ public static partial class Mouse {
 
     internal static void _update_mouse() {
 
+        _mb_middle = MonoInput.ButtonState.Released;
+        _mb_right  = MonoInput.ButtonState.Released;
+        _mb_left   = MonoInput.ButtonState.Released;
+
         if (!_main.IsActive) { return; }
 
         MonoInput.MouseState ms = MonoInput.Mouse.GetState(window);
 
-        _mb_middle = MonoInput.ButtonState.Released;
-        _mb_right  = MonoInput.ButtonState.Released;
-        _mb_left   = MonoInput.ButtonState.Released;
+        if (ms.LeftButton == MonoInput.ButtonState.Pressed) {
+
+            mouse_lastbutton = mb_left;
+
+            _mb_left = MonoInput.ButtonState.Pressed;
+        }
 
         if (ms.MiddleButton == MonoInput.ButtonState.Pressed) {
 
@@ -30,11 +37,6 @@ public static partial class Mouse {
             _mb_right = MonoInput.ButtonState.Pressed;
         }
 
-        if (ms.LeftButton == MonoInput.ButtonState.Pressed) {
-
-            mouse_lastbutton = mb_left;
-
-            _mb_left = MonoInput.ButtonState.Pressed;
-        }
+        _wheel = ms.ScrollWheelValue;
     }
 }
