@@ -22,11 +22,22 @@ public static partial class Keyboard {
         return keyboard_check_released(key);
     }
 
+    public static void PressKey(byte key) {
+
+        keyboard_key_press(key);
+    }
+
+    public static void ReleaseKey(byte key) {
+
+        keyboard_key_release(key);
+    }
+
     public static void ClearKey(byte key) {
         
         keyboard_clear(key);
     }
 
+    [Obsolete("It is not recommended to use. Please use the Input.ClearIO() instead.")]
     public static void ClearIO() {
         
         io_clear();

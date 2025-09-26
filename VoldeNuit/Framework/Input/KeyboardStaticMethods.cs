@@ -159,11 +159,90 @@ public static partial class Keyboard {
         ;
     }
 
-    public static void keyboard_clear(byte key) {
+    public static void keyboard_key_press(byte key) {
 
-        _keyboard_lastkey = _keyboard_lastkey.Where(k => k != (Keys)key).ToArray(); return;
+        switch (key) {
+
+            case vk_shift: {
+
+                _keyboard_lastkey = [.._keyboard_lastkey.Where(key => key != LeftShift && key != RightShift), 
+                                     LeftShift, RightShift];
+
+                break;
+            }
+
+            case vk_control: {
+
+                _keyboard_lastkey = [.._keyboard_lastkey.Where(key => key != LeftControl && key != RightControl), 
+                                     LeftControl, RightControl];
+
+                break;
+            }
+
+            case vk_alt: {
+
+                _keyboard_lastkey = [.._keyboard_lastkey.Where(key => key != LeftAlt && key != RightAlt), 
+                                     LeftAlt, RightAlt];
+
+                break;
+            }
+        }
+
+        if (key >= 'a' && key <= 'z') { key = (byte)(key-32); }
+
+        _keyboard_lastkey = [.._keyboard_lastkey.Where(_key => (byte)_key != key), 
+                             (Keys)key];
+
+        vk_lastkey = _keyboard_lastkey.Length == 0? vk_nokey: (byte)_keyboard_lastkey[^1];
+
+        return;
     }
 
+    public static void keyboard_key_release(byte key) {
+
+        switch (key) {
+
+            case vk_shift: {
+
+                _keyboard_lastkey = [.._keyboard_lastkey.Where(key => key != LeftShift && key != RightShift)];
+
+                break;
+            }
+
+            case vk_control: {
+
+                _keyboard_lastkey = [.._keyboard_lastkey.Where(key => key != LeftControl && key != RightControl)];
+
+                break;
+            }
+
+            case vk_alt: {
+
+                _keyboard_lastkey = [.._keyboard_lastkey.Where(key => key != LeftAlt && key != RightAlt)];
+
+                break;
+            }
+        }
+
+        if (key >= 'a' && key <= 'z') { key = (byte)(key-32); }
+
+        _keyboard_lastkey = [.._keyboard_lastkey.Where(_key => (byte)_key != key)];
+
+        vk_lastkey = _keyboard_lastkey.Length == 0? vk_nokey: (byte)_keyboard_lastkey[^1];
+
+        return;
+    }
+
+    public static void keyboard_clear(byte key) {
+
+        _keyboard_lastkey = [.._keyboard_lastkey.Where(k => k != (Keys)key)]; 
+        
+        vk_lastkey = _keyboard_lastkey.Length == 0? vk_nokey: (byte)_keyboard_lastkey[^1];
+
+        return;
+    }
+
+    [Obsolete("It is not recommended to use. Please use the Input.io_clear() instead.")]
     public static void io_clear() {
 
         Mouse.mouse_lastbutton = Mouse.mb_none;
