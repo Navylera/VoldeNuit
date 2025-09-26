@@ -28,6 +28,8 @@ public static partial class Mouse {
     internal static MonoInput.ButtonState _mb_middle = MonoInput.ButtonState.Released;
     internal static MonoInput.ButtonState _mb_right  = MonoInput.ButtonState.Released;
 
+    internal static int _wheel = 0;
+
     public const int mb_left   = 0;
     public const int mb_middle = 1;
     public const int mb_right  = 2;
