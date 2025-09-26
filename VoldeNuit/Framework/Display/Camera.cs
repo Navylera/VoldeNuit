@@ -16,7 +16,7 @@ public partial class Camera(int xview, int yview, int wview, int hview, int xpor
         int bwidth  = 0;
         int bheight = 0;
 
-        foreach (var (c, i) in room_current.camera.Select((c, i) => (c, i))) {
+        foreach (Camera c in room_current.camera) {
 
             if (c.view._updated) {
 
