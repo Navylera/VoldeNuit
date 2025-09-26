@@ -11,8 +11,19 @@ public partial class Viewport {
         _height = height;
     }
 
-    public int x;
-    public int y;
+    private int _x;
+    public int x { get => _x; set { 
+        
+            _x = value < 0? 0 : value;
+        }
+    }
+
+    private int _y;
+    public int y { get => _y; set { 
+        
+            _y = value < 0? 0 : value;
+        }
+    }
 
     private int _width;
     public int width {
