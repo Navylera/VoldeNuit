@@ -60,18 +60,13 @@ public static partial class Heart {
 
     internal static HashSet<Instance> instance_id_solid = [];
 
-    internal static readonly List<Sprite> _sprite = [];
+    internal static readonly HashSet<Sprite> _sprite = [];
 
-    internal static readonly List<Room> _room = [];
+    // internal static readonly List<Room> _room = [];
 
     internal static Room _room_current;
 
-    public static Room room_current {
-
-        get => _room_current;
-
-        internal set => _room_current = value;
-    }
+    public static Room room_current { get => _room_current; }
 
     public static int room_width {
 
@@ -116,7 +111,7 @@ public static partial class Heart {
 
     internal static char separator = Path.DirectorySeparatorChar;
 
-    internal static string version = "2.0.0";
+    internal static string version = "2.1.0";
 
     internal static Progress _progress = Progress.BEGIN_STEP;
 
@@ -176,7 +171,7 @@ public static partial class Heart {
 
             if (instance != null && !instance._disposed) { instance._Begin_Step(); };
 
-            if (_beat_copy.Count == 0) { io_clear(); goto Exit; }
+            if (_beat_copy.Count == 0) { UniversalInput.io_clear(); goto Exit; }
         }
 
         _progress = Progress.STEP;
@@ -184,7 +179,7 @@ public static partial class Heart {
 
             if (instance != null && !instance._disposed) { instance._Step(); };
 
-            if (_beat_copy.Count == 0) { io_clear(); goto Exit; }
+            if (_beat_copy.Count == 0) { UniversalInput.io_clear(); goto Exit; }
         }
 
         _progress = Progress.END_STEP;
@@ -192,7 +187,7 @@ public static partial class Heart {
         
             if (instance != null && !instance._disposed) { instance._End_Step(); };
 
-            if (_beat_copy.Count == 0) { io_clear(); goto Exit; }
+            if (_beat_copy.Count == 0) { UniversalInput.io_clear(); goto Exit; }
         }
 
         foreach (SoundInstance si in _soundinstance) {
@@ -201,10 +196,6 @@ public static partial class Heart {
 
             if (si._update) { si._update_sound(); }
         }
-
-        _update_keyboard();
-
-        _update_mouse();
 
         _update_window_size();
         
@@ -243,6 +234,10 @@ public static partial class Heart {
 
             instance.GUI_Draw();
         }
+
+        _update_keyboard();
+
+        _update_mouse();
 
         Exit: return;
     }
