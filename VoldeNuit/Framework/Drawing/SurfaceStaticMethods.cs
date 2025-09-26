@@ -36,4 +36,11 @@ public static class Surface {
 
         surface.Dispose(); return;
     }
+
+    public static void surface_clear(this GraphicsDevice graphicsDevice, uint color) {
+        
+        graphicsDevice.Clear(Color._color_to_xna(color));
+
+        return;
+    }
 }
