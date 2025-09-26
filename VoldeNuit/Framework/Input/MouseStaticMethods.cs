@@ -119,8 +119,6 @@ public static partial class Mouse {
 
     public static bool mouse_check_button_released(int mb) {
 
-        if (!_main.IsActive) { return true; }
-
         MonoInput.MouseState ms = MonoInput.Mouse.GetState(window);
 
         switch (mb) {
@@ -159,5 +157,61 @@ public static partial class Mouse {
         }
 
         _stacktrace(ExConstants.ARGUMENT_NOT_ALLOWED); return false;
+    }
+
+    public static void mouse_button_press(int mb) {
+
+        switch (mb) {
+
+            case mb_left: {
+
+                _mb_left = MonoInput.ButtonState.Pressed; return;
+            }
+
+            case mb_middle: {
+
+                _mb_middle = MonoInput.ButtonState.Pressed; return;
+            }
+
+            case mb_right: {
+
+                _mb_right = MonoInput.ButtonState.Pressed; return;
+            }
+        }
+
+        _stacktrace(ExConstants.ARGUMENT_NOT_ALLOWED); return;
+    }
+
+    public static void mouse_button_release(int mb) {
+
+        switch (mb) {
+
+            case mb_left: {
+
+                _mb_left = MonoInput.ButtonState.Released; return;
+            }
+
+            case mb_middle: {
+
+                _mb_middle = MonoInput.ButtonState.Released; return;
+            }
+
+            case mb_right: {
+
+                _mb_right = MonoInput.ButtonState.Released; return;
+            }
+        }
+
+        _stacktrace(ExConstants.ARGUMENT_NOT_ALLOWED); return;
+    }
+
+    public static bool mouse_wheel_up() {
+
+        return MonoInput.Mouse.GetState().ScrollWheelValue > _wheel;
+    }
+
+    public static bool mouse_wheel_down() {
+
+        return MonoInput.Mouse.GetState().ScrollWheelValue < _wheel;
     }
 }
