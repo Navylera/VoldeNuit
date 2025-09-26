@@ -13,8 +13,8 @@ internal class R_Splash: Room {
         int width = (int)float.Ceiling(640*scale);
         int height = (int)float.Ceiling(480*scale);
 
-        // room_width  = 640;
-        // room_height = 480;
+        room_width  = 640;
+        room_height = 480;
 
         if (scale >= 1) {
 
