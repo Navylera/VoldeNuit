@@ -24,8 +24,28 @@ public static partial class Mouse {
         return mouse_check_button_pressed(mouseButton);
     }
 
-    public static bool HasButtonReleased(int mb) {
+    public static bool HasButtonReleased(int mouseButton) {
         
-        return mouse_check_button_released(mb);
+        return mouse_check_button_released(mouseButton);
+    }
+
+    public static void PressButton(int mouseButton) {
+
+        mouse_button_press(mouseButton);
+    }
+
+    public static void ReleaseButton(int mouseButton) {
+
+        mouse_button_press(mouseButton);
+    }
+
+    public static bool HasWheelUp() {
+
+        return mouse_wheel_up();
+    }
+
+    public static bool HasWheelDown() {
+
+        return mouse_wheel_down();
     }
 }
