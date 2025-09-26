@@ -7,6 +7,11 @@ using static Heart;
 
 public partial class Room {
 
+    public static void room_restart() {
+
+        room_goto(room_current.GetType());
+    }
+
     public static void room_goto(Type name_room) {
 
         Type? ptype = name_room.BaseType;
@@ -20,7 +25,7 @@ public partial class Room {
 
         Room? dst = null;
 
-        foreach (Room r in _room) { if (r.GetType() == name_room) { dst = r; break; } }
+        // foreach (Room r in _room) { if (r.GetType() == name_room) { dst = r; break; } }
 
         foreach (Instance o in _instance_id) { o.Dispose(); }
         foreach (Instance o in _instance_id_deactivated) { o.Dispose(); }
@@ -37,10 +42,9 @@ public partial class Room {
 
         if (dst == null) { return; }
 
-        room_current = dst;
+        _room_current = dst;
 
-        room_current.Create();
-        room_current._Create();
+        _room_current._Create();
 
         return;
     }

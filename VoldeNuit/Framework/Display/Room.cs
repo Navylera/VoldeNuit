@@ -66,6 +66,11 @@ public partial class Room {
 
     public uint color_background = 0xffffffffu;
 
+    public Room() {
+
+        Create();
+    }
+
     public virtual void Create() { }
 
     internal void _Create() {
