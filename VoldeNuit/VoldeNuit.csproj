@@ -8,7 +8,7 @@
     <Deterministic>false</Deterministic>
 
     <PackageId>VoldeNuit.Framework</PackageId>
-    <PackageVersion>2.0.0</PackageVersion>
+    <PackageVersion>2.1.0</PackageVersion>
     <Description>UNOFFICIAL additional framework of the MonoGameFramework</Description>
     <PackageTags>VoldeNuit;VoldeNuitFramework;MonoGame;</PackageTags>
     <PackageProjectUrl>https://github.com/Navylera/VoldeNuit</PackageProjectUrl>
