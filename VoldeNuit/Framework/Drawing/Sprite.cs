@@ -4,6 +4,7 @@ using Microsoft.Xna.Framework.Graphics;
 namespace VoldeNuit.Framework.Drawing;
 
 using static Heart;
+using static Configuration;
 
 public partial class Sprite {
 
@@ -19,9 +20,10 @@ public partial class Sprite {
 
                 string ext = texture_path[^3..];
 
-                if (ext == "xnb") {
+                if (ext == "xnb" &&
+                    CONTENT_PATH == $".{separator}Content{separator}") {
 
-                    _texture = _main.Content.Load<Texture2D>(texture_path);
+                    _texture = _main.Content.Load<Texture2D>(texture_path[10..^4]);
                 }
 
                 if (ext == "png") {
