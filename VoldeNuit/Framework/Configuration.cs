@@ -28,5 +28,6 @@ public static class Configuration {
         LEGACY
     }
 
+    [Obsolete("This property will be removed in the next major update.")]
     public static string CONTENT_PATH { get; set; } = $".{separator}Content{separator}";
 }
