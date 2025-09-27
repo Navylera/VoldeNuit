@@ -50,6 +50,12 @@ public partial class SoundInstance {
         _sfxi = sound.sfx.CreateInstance();
 
         _soundinstance.Add(this);
+
+        _sfxi.Volume = _volume;
+
+        _sfxi.IsLooped = loop;
+
+        _sfxi.Play();
     }
 
     internal SoundInstance(Sound sound, Emitter emitter, Listener listener, bool loop) {
@@ -69,6 +75,8 @@ public partial class SoundInstance {
         _sfxi = sound.sfx.CreateInstance();
 
         _update = _update_sound();
+
+        _sfxi.Play();
     }
 
     internal bool _update_sound() {
