@@ -190,7 +190,9 @@ public static partial class Heart {
             if (_beat_copy.Count == 0) { UniversalInput.io_clear(); goto Exit; }
         }
 
-        foreach (SoundInstance si in _soundinstance) {
+        List<SoundInstance> _sicp = [.._soundinstance];
+
+        foreach (SoundInstance si in _sicp) {
 
             if (!si.loop && si._sfxi?.State == SoundState.Stopped) { si.Dispose(); continue; }
 
