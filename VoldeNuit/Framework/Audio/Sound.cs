@@ -17,6 +17,8 @@ public partial class Sound {
 
         get => _volume; set {
 
+            _volume = value;
+
             foreach (SoundInstance si in _soundinstance.Where(si => si.sound == this)) {
 
                 si._volume = volume;
@@ -36,9 +38,10 @@ public partial class Sound {
 
                 string ext = sound_path[^3..];
 
-                if (ext == "xnb") {
+                if (ext == "xnb" &&
+                    CONTENT_PATH == $".{separator}Content{separator}") {
 
-                    _sfx = _main.Content.Load<SoundEffect>(sound_path);
+                    _sfx = _main.Content.Load<SoundEffect>(sound_path[10..^4]);
                 }
                 
                 if (ext == "wav") {
@@ -59,9 +62,10 @@ public partial class Sound {
 
         string path_target = directory+separator+target;
 
-        if (File.Exists($"{path_target}.xnb")) { 
+        if (File.Exists($"{path_target}.xnb") &&
+            CONTENT_PATH == $".{separator}Content{separator}") { 
             
-            return _main.Content.Load<SoundEffect>($"{path_target}.xnb");
+            return _main.Content.Load<SoundEffect>(path_target[10..]);
         }
 
         if (File.Exists($"{path_target}.wav")) {
