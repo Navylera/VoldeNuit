@@ -37,7 +37,7 @@ public static partial class Keyboard {
         keyboard_clear(key);
     }
 
-    [Obsolete("This property will be removed in the next major update. Please use the Input.ClearIO() instead.")]
+    [Obsolete("This method will be removed in the next major update. Please use the Input.ClearIO() instead.")]
     public static void ClearIO() {
         
         io_clear();

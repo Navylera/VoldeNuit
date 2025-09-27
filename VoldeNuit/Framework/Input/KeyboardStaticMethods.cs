@@ -242,7 +242,7 @@ public static partial class Keyboard {
         return;
     }
 
-    [Obsolete("This property will be removed in the next major update. Please use the Input.io_clear() instead.")]
+    [Obsolete("This method will be removed in the next major update. Please use the Input.io_clear() instead.")]
     public static void io_clear() {
 
         Mouse.mouse_lastbutton = Mouse.mb_none;
