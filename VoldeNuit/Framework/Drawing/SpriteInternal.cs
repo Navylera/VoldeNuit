@@ -90,8 +90,12 @@ public partial class Sprite {
     private static Texture2D _load_texture(string directory, string target) {
 
         string path_target = directory+separator+target;
-        
-        if (File.Exists($"{path_target}.xnb")) { return _main.Content.Load<Texture2D>($"{path_target}.xnb"); }
+
+        if (File.Exists($"{path_target}.xnb") &&
+            CONTENT_PATH == $".{separator}Content{separator}") {
+
+            return _main.Content.Load<Texture2D>(path_target[10..]);
+        }
 
         if (File.Exists($"{path_target}.png")) { return _import($"{path_target}.png"); }
 
