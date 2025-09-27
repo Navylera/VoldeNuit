@@ -16,6 +16,7 @@ using static Heart;
 using static Configuration;
 using static Room;
 using static Draw;
+using static Sound;
 
 internal class I_Splash: Instance {
 
@@ -210,6 +211,8 @@ internal class I_Splash: Instance {
                     Sound? _s = (Sound?)Convert.ChangeType(Activator.CreateInstance(t), t);
 
                     if (_s == null) { pcount = pcount+1; continue; }
+
+                    _ = _s.sfx;
 
                     _sound.Add(_s);
                 }
