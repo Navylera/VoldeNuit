@@ -39,6 +39,8 @@ To start the Monogame project, please visit the
 
 To start project with VoldeNuitFramework, please visit [documentation page](https://navylera.github.io/VoldeNuitDocumentation).
 
+To check sample project made with VoldeNuitFramwork, plase visit [sample project repository](https://github.com/Navylera/VoldeNuitSampleProject).
+
 # Contributions
 If you've found a bug or want to request a new feature, please report it through [VoldeNuit issue tracker](https://github.com/Navylera/VoldeNuit/issues).\
 And if you've found a typing error or grammatically incorrect sentence, please report it through [Documentation issue tracker](https://github.com/Navylera/VoldeNuitDocumentation/issues).\
