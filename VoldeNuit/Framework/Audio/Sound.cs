@@ -1,7 +1,9 @@
-using System.Runtime.InteropServices;
+using System.Buffers.Binary;
 using System.Text;
 
 using Microsoft.Xna.Framework.Audio;
+
+using NVorbis;
 
 namespace VoldeNuit.Framework.Audio;
 
@@ -38,15 +40,28 @@ public partial class Sound {
 
                 string ext = sound_path[^3..];
 
-                if (ext == "xnb" &&
-                    CONTENT_PATH == $".{separator}Content{separator}") {
+                switch (ext) {
 
-                    _sfx = _main.Content.Load<SoundEffect>(sound_path[10..^4]);
-                }
-                
-                if (ext == "wav") {
-                    
-                    _sfx = SoundEffect.FromFile($"{sound_path}.wav");
+                    case "xnb": {
+
+                        if (CONTENT_PATH != $".{separator}Content{separator}") { break; }
+
+                        _sfx = _main.Content.Load<SoundEffect>(sound_path[10..^4]);
+
+                        break;
+                    }
+
+                    case "wav": {
+
+                        _sfx = SoundEffect.FromFile($"{sound_path}.wav"); break;
+                    }
+
+                    case "ogg": {
+
+                        _sfx = _read_ogg($"{sound_path}.ogg");
+
+                        break;
+                    }
                 }
             }
 
@@ -71,6 +86,11 @@ public partial class Sound {
         if (File.Exists($"{path_target}.wav")) {
 
             return SoundEffect.FromFile($"{path_target}.wav");
+        }
+
+        if (File.Exists($"{path_target}.ogg")) {
+
+            return _read_ogg($"{path_target}.ogg");
         }
 
         string[] array_directories = Directory.GetDirectories(directory);
@@ -100,6 +120,45 @@ public partial class Sound {
         SoundEffect? sfx = _load_sfx(sbuilder.ToString(), name_file);
 
         if (sfx == null) { _stacktrace(ExConstants.SOUND_NOT_ACCESSABLE); return null; }
+
+        return sfx;
+    }
+
+    internal static SoundEffect _read_ogg(string sound_path) {
+
+        FileStream fstream = File.OpenRead(sound_path);
+
+        VorbisReader vreader = new VorbisReader(fstream, true);
+
+        int samplerate = vreader.SampleRate;
+        int channels = vreader.Channels;
+
+        float[] rbuffer = new float[samplerate*channels];
+        byte[]  output  = new byte[sizeof(short)*vreader.TotalSamples*channels];
+
+        int count;
+
+        int offset = 0;
+
+        while ((count = vreader.ReadSamples(rbuffer, 0, rbuffer.Length)) > 0) {
+
+            for (int i=0; i<count; i=i+1) {
+
+                short data = short.Clamp((short)(short.MaxValue*rbuffer[i]), short.MinValue, short.MaxValue);
+
+                BinaryPrimitives.WriteInt16LittleEndian(output.AsSpan(offset, 2), data);
+                
+                offset = offset+2;
+            }
+        }
+
+        SoundEffect sfx = new SoundEffect(output, samplerate, 
+                                          channels == 1? AudioChannels.Mono: AudioChannels.Stereo);
+
+        fstream.Close();
+        fstream.Dispose();
+
+        vreader.Dispose();
 
         return sfx;
     }

@@ -115,8 +115,8 @@ internal class I_Splash: Instance {
         List<Type> fonttypes   = [..types.Where(t => t.BaseType == typeof(Font))];
         List<Type> soundtypes  = [..types.Where(t => t.BaseType == typeof(Sound))];
 
-        _traversal(dsprite, $"{sbuilder}Sprite", "png");
-        _traversal(dsound, $"{sbuilder}Sound", "wav");
+        _traversal(dsprite, $"{sbuilder}Sprite", ["png"]);
+        _traversal(dsound, $"{sbuilder}Sound", ["wav", "xnb", "ogg"]);
 
         tcount = spritetypes.Count+fonttypes.Count+soundtypes.Count;
 
@@ -137,17 +137,19 @@ internal class I_Splash: Instance {
         message = "Finishing Tasks...";
     }
 
-    private static void _traversal(Dictionary<string, string> dictionary, string directory, string ext) {
+    private static void _traversal(Dictionary<string, string> dictionary, string directory, string[] extlist) {
 
         string[] directories = Directory.GetFiles(directory);
         
         foreach (string s in directories) {
 
-            if (s[^3..] == ext) {
+            foreach (string ext in extlist) {
+
+                if (!s.EndsWith(ext)) { continue; }
 
                 string classname = s[(directory.Length+1)..^4];
 
-                dictionary.Add(classname, s);
+                dictionary.TryAdd(classname, s);
             }
         }
 
@@ -155,7 +157,7 @@ internal class I_Splash: Instance {
 
         foreach (string d in array_directories) {
 
-            _traversal(dictionary, d, ext);
+            _traversal(dictionary, d, extlist);
         }
     }
 

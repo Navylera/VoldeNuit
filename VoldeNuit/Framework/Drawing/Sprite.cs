@@ -18,15 +18,13 @@ public partial class Sprite {
 
             if (_texture == null && texture_path != null && File.Exists(texture_path)) {
 
-                string ext = texture_path[^3..];
-
-                if (ext == "xnb" &&
+                if (texture_path.EndsWith("xnb") &&
                     CONTENT_PATH == $".{separator}Content{separator}") {
 
                     _texture = _main.Content.Load<Texture2D>(texture_path[10..^4]);
                 }
 
-                if (ext == "png") {
+                if (texture_path.EndsWith("png")) {
                     
                     _texture = _import(texture_path);
                 }
