@@ -36,25 +36,29 @@ public static partial class Heart {
 
     internal static readonly HashSet<Instance> _instance_id = [];
 
-    public static IList<Instance> instance_id {
+    public static ReadOnlySpan<Instance> instance_id {
         
         get {
             
-            List<Instance> _ii_copy = [.._instance_id];
+            // List<Instance> _ii_copy = [.._instance_id];
 
-            return _ii_copy.AsReadOnly();
+            // return _ii_copy.AsReadOnly();
+
+            return new ReadOnlySpan<Instance>([.._instance_id]);
         }
     }
 
     internal static readonly HashSet<Instance> _instance_id_deactivated = [];
     
-    public static IList<Instance> instance_id_deactivated {
+    public static ReadOnlySpan<Instance> instance_id_deactivated {
         
         get {
             
-            IList<Instance> _ii_copy = [.._instance_id_deactivated];
+            // IList<Instance> _ii_copy = [.._instance_id_deactivated];
 
-            return _ii_copy.AsReadOnly();
+            // return _ii_copy.AsReadOnly();
+
+            return new ReadOnlySpan<Instance>([.._instance_id_deactivated]);
         }
     }
 
@@ -111,7 +115,7 @@ public static partial class Heart {
 
     internal static char separator = Path.DirectorySeparatorChar;
 
-    internal static string version = "2.1.0";
+    internal static string version = "2.2.0";
 
     internal static Progress _progress = Progress.BEGIN_STEP;
 
