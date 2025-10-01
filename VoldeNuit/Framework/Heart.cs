@@ -87,7 +87,10 @@ public static partial class Heart {
         get => room_current.room_speed; set => room_current.room_speed = value;
     }
 
-    public static int instance_number { get => _instance_id.Count; }
+    public static int instance_number { 
+        
+        get => _instance_id.Where(i => !i._disposed).Count();
+    }
 
     internal static readonly List<Font> _font = [];
 
@@ -168,30 +171,24 @@ public static partial class Heart {
 
         // Use copy of existing list => new instances are not updated in this step
         
-        _beat_copy = [.._instance_id];
+        // _beat_copy = [.._instance_id];
 
         _progress = Progress.BEGIN_STEP;
-        foreach (Instance instance in _beat_copy) { 
+        foreach (Instance instance in _instance_id.ToList()) { 
 
             if (instance != null && !instance._disposed) { instance._Begin_Step(); };
-
-            if (_beat_copy.Count == 0) { UniversalInput.io_clear(); goto Exit; }
         }
 
         _progress = Progress.STEP;
-        foreach (Instance instance in _beat_copy) { 
+        foreach (Instance instance in _instance_id.ToList()) { 
 
             if (instance != null && !instance._disposed) { instance._Step(); };
-
-            if (_beat_copy.Count == 0) { UniversalInput.io_clear(); goto Exit; }
         }
 
         _progress = Progress.END_STEP;
-        foreach (Instance instance in _beat_copy) { 
+        foreach (Instance instance in _instance_id.ToList()) { 
         
             if (instance != null && !instance._disposed) { instance._End_Step(); };
-
-            if (_beat_copy.Count == 0) { UniversalInput.io_clear(); goto Exit; }
         }
 
         List<SoundInstance> _sicp = [.._soundinstance];
@@ -245,7 +242,7 @@ public static partial class Heart {
 
         _update_mouse();
 
-        Exit: return;
+        return;
     }
 
     public static void Draw() {
