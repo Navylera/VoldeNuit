@@ -7,9 +7,9 @@ namespace VoldeNuit.Framework;
 
 public static partial class Heart {
 
-    public static IList<Instance> GetInstancesList() { return instance_id; }
+    public static ReadOnlySpan<Instance> GetInstancesList() { return instance_id; }
 
-    public static IList<Instance> GetInstancesDeactivatedList() { return instance_id_deactivated; }
+    public static ReadOnlySpan<Instance> GetInstancesDeactivatedList() { return instance_id_deactivated; }
 
     public static Room CurrentRoom { get => _room_current; }
     

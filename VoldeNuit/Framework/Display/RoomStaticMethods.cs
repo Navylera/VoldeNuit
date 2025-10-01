@@ -27,10 +27,18 @@ public partial class Room {
 
         // foreach (Room r in _room) { if (r.GetType() == name_room) { dst = r; break; } }
 
-        foreach (Instance o in _instance_id) { o.Dispose(); }
-        foreach (Instance o in _instance_id_deactivated) { o.Dispose(); }
+        List<Instance> ilist = [.._instance_id, .._instance_id_deactivated];
 
-        foreach (SoundInstance si in _soundinstance) { si.Dispose(); }
+        foreach (Instance instance in ilist) { 
+            
+            instance._execute_event_flag = false;
+
+            instance.Dispose();
+        }
+
+        List<SoundInstance> slist = [.._soundinstance];
+
+        foreach (SoundInstance si in slist) { si.Dispose(); }
 
         _beat_copy.Clear();
 

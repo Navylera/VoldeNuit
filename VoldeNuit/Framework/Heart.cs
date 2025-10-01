@@ -36,25 +36,29 @@ public static partial class Heart {
 
     internal static readonly HashSet<Instance> _instance_id = [];
 
-    public static IList<Instance> instance_id {
+    public static ReadOnlySpan<Instance> instance_id {
         
         get {
             
-            List<Instance> _ii_copy = [.._instance_id];
+            // List<Instance> _ii_copy = [.._instance_id];
 
-            return _ii_copy.AsReadOnly();
+            // return _ii_copy.AsReadOnly();
+
+            return new ReadOnlySpan<Instance>([.._instance_id]);
         }
     }
 
     internal static readonly HashSet<Instance> _instance_id_deactivated = [];
     
-    public static IList<Instance> instance_id_deactivated {
+    public static ReadOnlySpan<Instance> instance_id_deactivated {
         
         get {
             
-            IList<Instance> _ii_copy = [.._instance_id_deactivated];
+            // IList<Instance> _ii_copy = [.._instance_id_deactivated];
 
-            return _ii_copy.AsReadOnly();
+            // return _ii_copy.AsReadOnly();
+
+            return new ReadOnlySpan<Instance>([.._instance_id_deactivated]);
         }
     }
 
@@ -83,7 +87,10 @@ public static partial class Heart {
         get => room_current.room_speed; set => room_current.room_speed = value;
     }
 
-    public static int instance_number { get => _instance_id.Count; }
+    public static int instance_number { 
+        
+        get => _instance_id.Where(i => !i._disposed).Count();
+    }
 
     internal static readonly List<Font> _font = [];
 
@@ -111,7 +118,7 @@ public static partial class Heart {
 
     internal static char separator = Path.DirectorySeparatorChar;
 
-    internal static string version = "2.1.0";
+    internal static string version = "2.2.0";
 
     internal static Progress _progress = Progress.BEGIN_STEP;
 
@@ -164,30 +171,24 @@ public static partial class Heart {
 
         // Use copy of existing list => new instances are not updated in this step
         
-        _beat_copy = [.._instance_id];
+        // _beat_copy = [.._instance_id];
 
         _progress = Progress.BEGIN_STEP;
-        foreach (Instance instance in _beat_copy) { 
+        foreach (Instance instance in _instance_id.ToList()) { 
 
             if (instance != null && !instance._disposed) { instance._Begin_Step(); };
-
-            if (_beat_copy.Count == 0) { UniversalInput.io_clear(); goto Exit; }
         }
 
         _progress = Progress.STEP;
-        foreach (Instance instance in _beat_copy) { 
+        foreach (Instance instance in _instance_id.ToList()) { 
 
             if (instance != null && !instance._disposed) { instance._Step(); };
-
-            if (_beat_copy.Count == 0) { UniversalInput.io_clear(); goto Exit; }
         }
 
         _progress = Progress.END_STEP;
-        foreach (Instance instance in _beat_copy) { 
+        foreach (Instance instance in _instance_id.ToList()) { 
         
             if (instance != null && !instance._disposed) { instance._End_Step(); };
-
-            if (_beat_copy.Count == 0) { UniversalInput.io_clear(); goto Exit; }
         }
 
         List<SoundInstance> _sicp = [.._soundinstance];
@@ -241,8 +242,7 @@ public static partial class Heart {
 
         _update_mouse();
 
-        Exit: return;
-    }
+        return;
 
     public static void Draw() {
 
