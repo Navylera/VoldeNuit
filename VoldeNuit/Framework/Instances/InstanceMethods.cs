@@ -24,9 +24,10 @@ public abstract partial class Instance {
             return null;
         }
 
-        HashSet<Instance> list_instance = [this, 
-                                           .._instance_id.Where(i => i.GetType() == object_name || 
-                                                                i._is_child_of(object_name)
+        HashSet<Instance> list_instance = [
+            this, 
+            .._instance_id.Where(i => !i._disposed && 
+                                 (i.GetType() == object_name || i._is_child_of(object_name))
         )];
 
         if (list_instance.Count == 1) { return null; }
@@ -52,7 +53,8 @@ public abstract partial class Instance {
     public Instance? instance_place(float x, float y, Instance id) {
 
         if (!_is_child_of(typeof(Instance)) ||
-            !_instance_id.Contains(id)) {
+            !_instance_id.Contains(id) ||
+            id._disposed) {
             
             return null;
         }
@@ -83,9 +85,10 @@ public abstract partial class Instance {
             return [];
         }
 
-        HashSet<Instance> list_instance = [this, 
-                                           .._instance_id.Where(i => i.GetType() == object_name || 
-                                                                i._is_child_of(object_name)
+        HashSet<Instance> list_instance = [
+            this, 
+            .._instance_id.Where(i => !i._disposed && 
+                                 (i.GetType() == object_name || i._is_child_of(object_name))
         )];
 
         if (list_instance.Count == 1) { return []; }

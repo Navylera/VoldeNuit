@@ -66,9 +66,9 @@ public abstract partial class Instance {
 
             case Type t when t.BaseType == typeof(Instance): {
 
-                foreach (Instance o in _instance_id) {
+                foreach (Instance i in _instance_id) {
 
-                    if (o.GetType() == object_name) { return o; }
+                    if (i.GetType() == object_name) { return i; }
                 }
 
                 return null;
@@ -99,7 +99,7 @@ public abstract partial class Instance {
 
     public static bool instance_exists(Type object_name) {
 
-        foreach (Instance instance in _instance_id) {
+        foreach (Instance instance in _instance_id.Where(i => !i._disposed)) {
 
             if (instance.GetType() == object_name || instance._is_child_of(object_name)) {
 
@@ -112,7 +112,10 @@ public abstract partial class Instance {
 
     public static bool instance_exists(Instance id) {
 
-        foreach (Instance instance in _instance_id) { if (instance == id) { return true; } }
+        foreach (Instance instance in _instance_id.Where(i => !i._disposed)) { 
+            
+            if (instance == id) { return true; }
+        }
 
         return false;
     }
@@ -121,7 +124,7 @@ public abstract partial class Instance {
 
         bool ret = false;
 
-        foreach (Instance instance in _instance_id) {
+        foreach (Instance instance in _instance_id.Where(i => !i._disposed)) {
 
             if (instance.GetType() == object_name || instance._is_child_of(object_name)) {
 
@@ -136,7 +139,7 @@ public abstract partial class Instance {
     
     public static bool instance_destroy(Instance id, bool execute_event_flag = true) {
 
-        foreach (Instance instance in _instance_id) {
+        foreach (Instance instance in _instance_id.Where(i => !i._disposed)) {
 
             if (instance == id) {
 
@@ -156,7 +159,7 @@ public abstract partial class Instance {
 
         HashSet<Instance> list_instance = [];
 
-        foreach (Instance instance in _instance_id) {
+        foreach (Instance instance in _instance_id.Where(i => !i._disposed)) {
 
             if (instance.GetType() == object_name || instance._is_child_of(object_name)) {
 
@@ -193,7 +196,7 @@ public abstract partial class Instance {
 
         HashSet<Instance> list_instance = [];
 
-        foreach (Instance instance in _instance_id) {
+        foreach (Instance instance in _instance_id.Where(i => !i._disposed)) {
 
             if (instance.GetType() == object_name || instance._is_child_of(object_name)) {
 
@@ -216,7 +219,7 @@ public abstract partial class Instance {
 
         int count = 0;
 
-        foreach (Instance instance in _instance_id) {
+        foreach (Instance instance in _instance_id.Where(i => !i._disposed)) {
 
             if (instance.GetType() == object_name || instance._is_child_of(object_name)) {
                 
@@ -231,7 +234,7 @@ public abstract partial class Instance {
 
     public static Instance? instance_find(Instance id) {
 
-        foreach (Instance instance in _instance_id) {
+        foreach (Instance instance in _instance_id.Where(i => !i._disposed)) {
 
             if (instance == id) { return instance; }
         }
@@ -243,7 +246,7 @@ public abstract partial class Instance {
 
         HashSet<Instance> list_instance = [];
 
-        foreach (Instance instance in _instance_id) {
+        foreach (Instance instance in _instance_id.Where(i => !i._disposed)) {
 
             if (instance.GetType() == object_name || instance._is_child_of(object_name)) { 
                 
@@ -258,7 +261,7 @@ public abstract partial class Instance {
 
         int count = 0;
 
-        foreach (Instance instance in _instance_id) {
+        foreach (Instance instance in _instance_id.Where(i => !i._disposed)) {
 
             if (instance.GetType() == object_name || instance._is_child_of(object_name)) {
                 
