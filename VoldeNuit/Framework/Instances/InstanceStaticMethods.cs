@@ -217,19 +217,14 @@ public abstract partial class Instance {
 
     public static Instance? instance_find(Type object_name, int index = 0) {
 
-        int count = 0;
+        Instance[] ifound = [
+            .._instance_id.Where(i => !i._disposed &&
+                                 (i.GetType() == object_name || i._is_child_of(object_name)
+        ))];
 
-        foreach (Instance instance in _instance_id.Where(i => !i._disposed)) {
+        if (ifound.Length < index+1) { return null; }
 
-            if (instance.GetType() == object_name || instance._is_child_of(object_name)) {
-                
-                count = count+1;
-            }
-
-            if (count == index) { return instance; }
-        }
-
-        return null;
+        return ifound[index];
     }
 
     public static Instance? instance_find(Instance id) {
@@ -244,17 +239,9 @@ public abstract partial class Instance {
 
     public static List<Instance> instance_find_list(Type object_name) {
 
-        HashSet<Instance> list_instance = [];
-
-        foreach (Instance instance in _instance_id.Where(i => !i._disposed)) {
-
-            if (instance.GetType() == object_name || instance._is_child_of(object_name)) { 
-                
-                list_instance.Add(instance);
-            }
-        }
-
-        return [..list_instance];
+        return [.._instance_id.Where(i => !i._disposed &&
+                                     (i.GetType() == object_name || i._is_child_of(object_name)
+        ))];
     }
 
     public static int instance_number(Type object_name) {

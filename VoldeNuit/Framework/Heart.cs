@@ -118,7 +118,7 @@ public static partial class Heart {
 
     internal static char separator = Path.DirectorySeparatorChar;
 
-    internal static string version = "2.2.0";
+    internal static string version = "2.2.1";
 
     internal static Progress _progress = Progress.BEGIN_STEP;
 
