@@ -112,13 +112,13 @@ public static partial class Heart {
 
     internal static SpriteBatch _spritebatch;
 
-    internal static (int width, int height, Type point) _entry;
+    internal static (int width, int height, Type point, uint color) _entry;
 
     internal static Assembly assembly = null;
 
     internal static char separator = Path.DirectorySeparatorChar;
 
-    internal static string version = "2.2.1";
+    internal static string version = "2.2.2";
 
     internal static Progress _progress = Progress.BEGIN_STEP;
 
@@ -155,6 +155,11 @@ public static partial class Heart {
     public static void InitResolution(int width, int height) {
 
         _entry.width = width; _entry.height = height;
+    }
+
+    public static void InitSplashColor(uint color) {
+
+        _entry.color = color;
     }
 
     public static void InitEntryPoint(Type room) {
