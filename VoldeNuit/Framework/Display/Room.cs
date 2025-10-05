@@ -58,7 +58,7 @@ public partial class Room {
 
         get => _room_speed; set {
 
-            _room_speed = room_speed;
+            _room_speed = value;
 
             _main.TargetElapsedTime = TimeSpan.FromSeconds(1d/_room_speed);
         }
