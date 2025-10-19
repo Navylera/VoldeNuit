@@ -61,6 +61,8 @@ public partial class Sprite {
 
     private static Texture2D _import(string path_target) {
 
+        // TODO: add FileStream & modify texture to internal
+
         using MagickImage image = new MagickImage(path_target, MagickFormat.Png);
 
         using IPixelCollection<byte> pdata = image.GetPixels();
