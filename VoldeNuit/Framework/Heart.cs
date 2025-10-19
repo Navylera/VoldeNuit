@@ -23,9 +23,9 @@ using static Configuration;
 
 public static partial class Heart {
 
-    internal static Game _main;
+    internal static Game _main = null!;
 
-    internal static GraphicsDeviceManager _graphicsDeviceManager;
+    internal static GraphicsDeviceManager _graphicsDeviceManager = null!;
 
     public static GraphicsDevice graphicsDevice {
 
@@ -38,28 +38,14 @@ public static partial class Heart {
 
     public static ReadOnlySpan<Instance> instance_id {
         
-        get {
-            
-            // List<Instance> _ii_copy = [.._instance_id];
-
-            // return _ii_copy.AsReadOnly();
-
-            return new ReadOnlySpan<Instance>([.._instance_id]);
-        }
+        get { return new ReadOnlySpan<Instance>([.._instance_id]); }
     }
 
     internal static readonly HashSet<Instance> _instance_id_deactivated = [];
     
     public static ReadOnlySpan<Instance> instance_id_deactivated {
         
-        get {
-            
-            // IList<Instance> _ii_copy = [.._instance_id_deactivated];
-
-            // return _ii_copy.AsReadOnly();
-
-            return new ReadOnlySpan<Instance>([.._instance_id_deactivated]);
-        }
+        get { return new ReadOnlySpan<Instance>([.._instance_id_deactivated]); }
     }
 
     internal static HashSet<Instance> instance_id_solid = [];
@@ -68,7 +54,7 @@ public static partial class Heart {
 
     // internal static readonly List<Room> _room = [];
 
-    internal static Room _room_current;
+    internal static Room _room_current = null!;
 
     public static Room room_current { get => _room_current; }
 
@@ -94,11 +80,11 @@ public static partial class Heart {
 
     internal static readonly List<Font> _font = [];
 
-    public static Font font_current { get; set; } = null;
+    public static Font font_current { get; set; } = null!;
 
     internal static readonly List<DrawData> _draw = [];
 
-    internal static Texture2D _primitive;
+    internal static Texture2D _primitive = null!;
 
     internal static readonly List<Emitter> emitter = [];
 
@@ -108,13 +94,13 @@ public static partial class Heart {
 
     internal static readonly List<SoundInstance> _soundinstance = [];
 
-    internal static GameWindow window;
+    internal static GameWindow window = null!;
 
-    internal static SpriteBatch _spritebatch;
+    internal static SpriteBatch _spritebatch = null!;
 
     internal static (int width, int height, Type point, uint color) _entry;
 
-    internal static Assembly assembly = null;
+    internal static Assembly assembly = null!;
 
     internal static char separator = Path.DirectorySeparatorChar;
 
@@ -157,10 +143,12 @@ public static partial class Heart {
         _entry.width = width; _entry.height = height;
     }
 
-    public static void InitSplashColor(uint color) {
+    // On v2.3.0
 
-        _entry.color = color;
-    }
+    // public static void InitSplashColor(uint color) {
+
+    //     _entry.color = color;
+    // }
 
     public static void InitEntryPoint(Type room) {
 
@@ -175,29 +163,28 @@ public static partial class Heart {
     public static void Beat() {
 
         // Use copy of existing list => new instances are not updated in this step
-        
-        // _beat_copy = [.._instance_id];
+
+        _beat_copy = [.._instance_id];
 
         _progress = Progress.BEGIN_STEP;
-        foreach (Instance instance in _instance_id.ToList()) { 
+        foreach (Instance instance in _beat_copy) { 
 
             if (instance != null && !instance._disposed) { instance._Begin_Step(); };
         }
 
         _progress = Progress.STEP;
-        foreach (Instance instance in _instance_id.ToList()) { 
+        foreach (Instance instance in _beat_copy) { 
 
             if (instance != null && !instance._disposed) { instance._Step(); };
         }
 
         _progress = Progress.END_STEP;
-        foreach (Instance instance in _instance_id.ToList()) { 
+        foreach (Instance instance in _beat_copy) { 
         
             if (instance != null && !instance._disposed) { instance._End_Step(); };
         }
 
         List<SoundInstance> _sicp = [.._soundinstance];
-
         foreach (SoundInstance si in _sicp) {
 
             if (!si.loop && si._sfxi?.State == SoundState.Stopped) { si.Dispose(); continue; }
