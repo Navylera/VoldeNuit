@@ -145,7 +145,7 @@ public static partial class Draw {
                                                        sprite_index.sprite_height)) { 
                                 vx = sprite_index.x, vy = sprite_index.y,
                                 angle = angle, 
-                                color = (uint)float.Round((color&0xff000000u)*alpha, ROUNDING)|
+                                color = (uint)float.Round(255f*alpha, ROUNDING)<<24|
                                         (color&0x00ffffffu) 
         }; 
         
@@ -166,25 +166,22 @@ public static partial class Draw {
 
         int index = (int)float.Floor(image_index)%sprite_index.image_number;
 
-        if (left > sprite_index.sprite_width || top > sprite_index.sprite_height) { return; }
+        if (left < 0 || top < 0 || 
+            left > sprite_index.sprite_width || top > sprite_index.sprite_height) { 
+                
+            return;
+        }
 
-        int _left = left < 0? 0 : left;
-        int _top  = top < 0? 0 : top;
+        int _width = left+width > sprite_index.sprite_width? sprite_index.sprite_width-left : width;
 
-        int rx = int.Abs(_left-left);
-        int ry = int.Abs(_top-top);
-
-        int _width  = width-rx;
-        _width = _left+_width > sprite_index.sprite_width? sprite_index.sprite_width-_left : _width;
-        int _height = height-ry;
-        _height = _top+_height > sprite_index.sprite_height? sprite_index.sprite_height-_top : _height;
+        int _height = top+height > sprite_index.sprite_height? sprite_index.sprite_height-top : height;
 
         if (_width <= 0 || _height <= 0) { return; }
 
         int vpx = index*sprite_index.sprite_width;
 
-        DrawData drawdata = new DrawData(sprite_index.texture, x, y, 1, 1,
-                                         new Rectangle(vpx+_left, _top, _width, _height)) { 
+        DrawData drawdata = new DrawData(sprite_index.texture, x+left, y+top, 1, 1,
+                                         new Rectangle(vpx+left, top, _width, _height)) { 
                                 vx = sprite_index.x, vy = sprite_index.y 
         }; 
         
@@ -207,27 +204,26 @@ public static partial class Draw {
 
         int index = (int)float.Floor(image_index)%sprite_index.image_number;
 
-        if (left > sprite_index.sprite_width || top > sprite_index.sprite_height) { return; }
+        if (left < 0 || top < 0 || 
+            left > sprite_index.sprite_width || top > sprite_index.sprite_height) { 
+                
+            return;
+        }
 
-        int _left = left < 0? 0 : left;
-        int _top  = top < 0? 0 : top;
+        int _width = left+width > sprite_index.sprite_width? sprite_index.sprite_width-left : width;
 
-        int rx = int.Abs(_left-left);
-        int ry = int.Abs(_top-top);
+        int _height = top+height > sprite_index.sprite_height? sprite_index.sprite_height-top : height;
 
-        int _width  = width-rx;
-        _width = _left+_width > sprite_index.sprite_width? sprite_index.sprite_width-_left : _width;
-        int _height = height-ry;
-        _height = _top+_height > sprite_index.sprite_height? sprite_index.sprite_height-_top : _height;
+        if (_width <= 0 || _height <= 0) { return; }
 
         int vpx = index*sprite_index.sprite_width;
 
-        DrawData drawdata = new DrawData(sprite_index.texture, x+rx, y+ry, xscale, yscale,
-                                         new Rectangle(vpx+_left, _top, _width, _height)) {
-                                vx = sprite_index.x-_left-(_width/2), vy = sprite_index.y-_top-_height+1, 
-                                color = (uint)float.Round((color&0xff000000u)*alpha, ROUNDING)|
+        DrawData drawdata = new DrawData(sprite_index.texture, x+(xscale*left), y+(yscale*top), xscale, yscale,
+                                         new Rectangle(vpx+left, top, _width, _height)) { 
+                                vx = sprite_index.x, vy = sprite_index.y,
+                                color = (uint)float.Round(255f*alpha, ROUNDING)<<24|
                                         (color&0x00ffffffu) 
-        };
+        }; 
         
         if (_graphicsDeviceManager.GraphicsDevice.GetRenderTargets().Length != 0) {
 
@@ -702,7 +698,7 @@ public static partial class Draw {
                                          new Rectangle(0, 0, texture.Width, texture.Height)) { 
                                 vx = vx, vy = vy,
                                 angle = angle, 
-                                color = (uint)float.Round((color&0xff000000u)*alpha, ROUNDING)|
+                                color = (uint)float.Round(255f*alpha, ROUNDING)<<24|
                                         (color&0x00ffffffu) 
         }; 
         
@@ -716,28 +712,24 @@ public static partial class Draw {
 
     public static void draw_texture_part(Texture2D texture, 
                                          int left, int top, int width, int height, float x, float y) {
-
+                                            
         if (((uint)_progress &120) == 0) { return; }
 
         if (texture == null) { return; }
 
-        if (left > texture.Width || top > texture.Height) { return; }
+        if (left < 0 || top < 0 || 
+            left > texture.Width || top > texture.Height) { 
+                
+            return;
+        }
 
-        int _left = left < 0? 0 : left;
-        int _top  = top < 0? 0 : top;
-
-        int rx = int.Abs(_left-left);
-        int ry = int.Abs(_top-top);
-
-        int _width  = width-rx;
-        _width = _left+_width > texture.Width? texture.Width-_left : _width;
-        int _height = height-ry;
-        _height = _top+_height > texture.Height? texture.Height-_top : _height;
+        int _width  = left+width > texture.Width? texture.Width-left : width;
+        int _height = top+height > texture.Height? texture.Height-top : height;
 
         if (_width <= 0 || _height <= 0) { return; }
 
-        DrawData drawdata = new DrawData(texture, x, y, 1, 1,
-                                         new Rectangle(_left, _top, _width, _height)) { 
+        DrawData drawdata = new DrawData(texture, x+left, y+top, 1, 1,
+                                         new Rectangle(left, top, _width, _height)) { 
                                 vx = 0, vy = 0
         };
         
@@ -760,21 +752,21 @@ public static partial class Draw {
 
         if (left > texture.Width || top > texture.Height) { return; }
 
-        int _left = left < 0? 0 : left;
-        int _top  = top < 0? 0 : top;
+        if (left < 0 || top < 0 || 
+            left > texture.Width || top > texture.Height) { 
+                
+            return;
+        }
 
-        int rx = int.Abs(_left-left);
-        int ry = int.Abs(_top-top);
+        int _width  = left+width > texture.Width? texture.Width-left : width;
+        int _height = top+height > texture.Height? texture.Height-top : height;
 
-        int _width  = width-rx;
-        _width = _left+_width > texture.Width? texture.Width-_left : _width;
-        int _height = height-ry;
-        _height = _top+_height > texture.Height? texture.Height-_top : _height;
+        if (_width <= 0 || _height <= 0) { return; }
 
-        DrawData drawdata = new DrawData(texture, x+rx, y+ry, xscale, yscale,
-                                         new Rectangle(_left, _top, _width, _height)) {
-                                vx = -_left-(_width/2), vy = -_top-_height+1, 
-                                color = (uint)float.Round((color&0xff000000u)*alpha, ROUNDING)|
+        DrawData drawdata = new DrawData(texture, x+(xscale*left), y+(yscale*top), xscale, yscale,
+                                         new Rectangle(left, top, _width, _height)) { 
+                                vx = 0, vy = 0,
+                                color = (uint)float.Round(255f*alpha, ROUNDING)<<24|
                                         (color&0x00ffffffu) 
         }; 
         

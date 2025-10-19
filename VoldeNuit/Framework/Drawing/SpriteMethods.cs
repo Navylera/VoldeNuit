@@ -10,7 +10,7 @@ public partial class Sprite {
 
     public static Sprite operator +(Sprite sprite, Texture2D texture) {
 
-        if (sprite.GetType().Name != "Sprite") { _stacktrace(ExConstants.ARGUMENT_NOT_ALLOWED); return null; }
+        if (sprite.GetType().Name != "Sprite") { _stacktrace(ExConstants.ARGUMENT_NOT_ALLOWED); return null!; }
 
         if (sprite.texture == null || texture == null) { return sprite; }
 
@@ -53,7 +53,7 @@ public partial class Sprite {
         if (subsprite.texture == null ||
             subsprite.texture.Height != subsprite.sprite_height) { return sprite; }
 
-        if (sprite.GetType().Name != "Sprite") { _stacktrace(ExConstants.ARGUMENT_NOT_ALLOWED); return null; }
+        if (sprite.GetType().Name != "Sprite") { _stacktrace(ExConstants.ARGUMENT_NOT_ALLOWED); return null!; }
 
         return sprite+subsprite.texture;
     }

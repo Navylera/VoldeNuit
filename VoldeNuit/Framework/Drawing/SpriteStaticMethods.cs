@@ -38,7 +38,7 @@ public partial class Sprite {
         if (sprite.sprite_width  != grayscale.sprite_width ||
             sprite.sprite_height != grayscale.sprite_height) {
 
-            _stacktrace(ExConstants.SPRITE_ALPHA_NOT_MATCHED); return null;
+            _stacktrace(ExConstants.SPRITE_ALPHA_NOT_MATCHED); return null!;
         }
 
         Sprite ret = new Sprite() {
@@ -62,7 +62,7 @@ public partial class Sprite {
 
             if ((r != g) || (g != b) || (b != r)) {
 
-                _stacktrace(ExConstants.ALPHA_IS_NOT_GRAYSCALE); return null;
+                _stacktrace(ExConstants.ALPHA_IS_NOT_GRAYSCALE); return null!;
             }
 
             float alpha = (float)r/255;

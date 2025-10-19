@@ -8,7 +8,7 @@
     <Deterministic>false</Deterministic>
 
     <PackageId>VoldeNuit.Framework</PackageId>
-    <PackageVersion>2.2.1</PackageVersion>
+    <PackageVersion>2.2.2</PackageVersion>
     <Description>UNOFFICIAL additional framework of the MonoGameFramework</Description>
     <PackageTags>VoldeNuit;VoldeNuitFramework;MonoGame;</PackageTags>
     <PackageProjectUrl>https://github.com/Navylera/VoldeNuit</PackageProjectUrl>
@@ -28,6 +28,7 @@
     <EmbeddedResource Include="Framework/Preload/DefaultFont/Galmuri9.ttf_data" />
 
     <EmbeddedResource Include="Framework/Preload/VoldeNuit.png" />
+    <EmbeddedResource Include="Framework/Preload/S_Blush.png" />
 
     <None Include="README.md">
       <Pack>True</Pack>

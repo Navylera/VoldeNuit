@@ -10,15 +10,15 @@ namespace VoldeNuit.Framework.Preload;
 
 using static Heart;
 
-internal class S_Splash: Sprite {
+internal class S_Blush: Sprite {
 
-    public S_Splash() {
+    public S_Blush() {
 
         // TODO: Use texture_path
 
         Assembly asb = Assembly.GetExecutingAssembly();
 
-        string directory = asb.GetManifestResourceNames().First(n => n.EndsWith("VoldeNuit.png"));
+        string directory = asb.GetManifestResourceNames().First(n => n.EndsWith("S_Blush.png"));
 
         using Stream stream = asb.GetManifestResourceStream(directory)!;
 
@@ -46,10 +46,10 @@ internal class S_Splash: Sprite {
         
         _texture.SetData(parray);
 
-        sprite_width  = 300;
-        sprite_height = 100;
+        sprite_width  = 4;
+        sprite_height = 64;
 
-        x = 150;
-        y = 61;
+        x = 0;
+        y = 0;
     }
 }

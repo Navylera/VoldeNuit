@@ -16,7 +16,6 @@ using static Heart;
 using static Configuration;
 using static Room;
 using static Draw;
-using static Sound;
 
 internal class I_Splash: Instance {
 
@@ -26,8 +25,6 @@ internal class I_Splash: Instance {
 
     internal int tcount = 0;
     internal static int pcount { get; set; } = 0;
-
-    internal float alpha = 0;
 
     internal bool completeload = false;
     internal bool completeset = false;
@@ -46,7 +43,9 @@ internal class I_Splash: Instance {
         _graphicsDeviceManager.GraphicsDevice, 240, 11
     );
 
-    MonoColor color = Color._color_to_xna(0x00000000u);
+    internal float blush = 0f;
+
+    MonoColor color = Color._color_to_xna(0);
 
     public I_Splash() {
 
@@ -54,7 +53,7 @@ internal class I_Splash: Instance {
 
         sprite_index = Instantiate(typeof(S_Splash));
 
-        image_speed = 0.3f;
+        image_speed = 0.4f;
 
         draw_set_font(new DefaultFont.DefaultFont());
 
@@ -64,6 +63,8 @@ internal class I_Splash: Instance {
     }
 
     public override void Step() {
+
+        room_speed = 60;
 
         if (completeload && !completeset) {
 
@@ -82,10 +83,10 @@ internal class I_Splash: Instance {
 
         if (completeload && image_index >= 49.9f) {
 
-            alpha = float.Clamp(alpha+.0084f, 0, 1);
+            blush = blush+0.3f;
         }
 
-        if (alpha >= 1) {
+        if (blush >= 20) {
 
             halign = _halign;
 
@@ -93,6 +94,10 @@ internal class I_Splash: Instance {
 
             message_white .Dispose();
             message_violet.Dispose();
+
+            sprite_index?.Dispose();
+
+            Instantiate(typeof(S_Blush))?.Dispose();
 
             room_goto(_entry.point);
         }
@@ -167,7 +172,7 @@ internal class I_Splash: Instance {
 
             foreach (Type t in types) {
 
-                if (dictionary.TryGetValue(t.Name, out string path)) {
+                if (dictionary.TryGetValue(t.Name, out string? path)) {
 
                     Sprite? _s = (Sprite?)Convert.ChangeType(Activator.CreateInstance(t), t);
 
@@ -208,7 +213,7 @@ internal class I_Splash: Instance {
 
             foreach (Type t in types) {
 
-                if (dictionary.TryGetValue(t.Name, out string path)) {
+                if (dictionary.TryGetValue(t.Name, out string? _)) {
 
                     Sound? _s = (Sound?)Convert.ChangeType(Activator.CreateInstance(t), t);
 
@@ -228,7 +233,6 @@ internal class I_Splash: Instance {
 
         draw_self();
         
-        draw_set_alpha(1f);
         draw_set_color(0xffffff);
 
         draw_rectangle(x-120, y+50, 240, 14, true);
@@ -256,7 +260,7 @@ internal class I_Splash: Instance {
 
         _graphicsDeviceManager.GraphicsDevice.Clear(color);
 
-        draw_set_color(0x74569bu);
+        draw_set_color(_entry.color);
 
         draw_text(120, 0, message[..^(int)(float.Floor(progressindex))]);
 
@@ -271,19 +275,53 @@ internal class I_Splash: Instance {
 
         draw_text(640-10, 480-35, $"VoldeNuit Framework v.{version}");
         draw_text(640-10, 480-20, "https://github.com/Navylera/VoldeNuit");
-    }
 
-    public override void End_Draw() {
+        int block = room_width/20;
+        
+        int blushwidth = block*(int)MathF.Pow(2, float.Floor(blush));
+        int fillwidth = blush < 6? 0: block*(1<<(int)float.Floor(blush-5));
 
-        draw_set_color(room_current.color_background);
+        for (int i=fillwidth; i<fillwidth+blushwidth; i=i+4) {
 
-        draw_rectangle(0, 0, room_current.room_width, room_current.room_height, true);
+            if (i > room_width) { goto EXITCOLOR; }
 
-        draw_set_color(0xffffffu);
+            for (int k=0; k<room_height; k=k+64) {
 
-        draw_set_alpha(alpha);
-        draw_set_color(0x000000);
+                float iindex = 16*(1-(i-fillwidth)/(float)blushwidth);
 
-        draw_rectangle(0, 0, room_current.room_width, room_current.room_height, false);
+                draw_sprite_ext(Instantiate(typeof(S_Blush)), iindex,
+                                i, k, 1, 1, 0, _entry.color, 1
+                );
+            }
+        }
+
+        EXITCOLOR: 
+
+        draw_set_color(_entry.color);
+        draw_rectangle(0, 0, int.Clamp(fillwidth, 0, room_width), room_height);
+
+        if (blush <= 6) { return; }
+
+        blushwidth = block*(int)MathF.Pow(2, float.Floor(blush-6));
+        fillwidth = blush < 12? 0: block*(1<<(int)float.Floor(blush-11));
+
+        for (int i=fillwidth; i<fillwidth+blushwidth; i=i+4) {
+
+            if (i > room_width) { goto EXITBLACK; }
+
+            for (int k=0; k<room_height; k=k+64) {
+
+                float iindex = 15*(1-(i-fillwidth)/(float)blushwidth);
+
+                draw_sprite_ext(Instantiate(typeof(S_Blush)), iindex,
+                                i, k, 1, 1, 0, 0x0u, 1
+                );
+            }
+        }
+
+        EXITBLACK: 
+
+        draw_set_color(0x0u);
+        draw_rectangle(0, 0, int.Clamp(fillwidth, 0, room_width), room_height);
     }
 }
