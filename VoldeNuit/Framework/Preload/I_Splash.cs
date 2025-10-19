@@ -16,7 +16,6 @@ using static Heart;
 using static Configuration;
 using static Room;
 using static Draw;
-using static Sound;
 
 internal class I_Splash: Instance {
 
@@ -96,9 +95,9 @@ internal class I_Splash: Instance {
             message_white .Dispose();
             message_violet.Dispose();
 
-            sprite_index.Dispose();
+            sprite_index?.Dispose();
 
-            Instantiate(typeof(S_Blush)).Dispose();
+            Instantiate(typeof(S_Blush))?.Dispose();
 
             room_goto(_entry.point);
         }
@@ -173,7 +172,7 @@ internal class I_Splash: Instance {
 
             foreach (Type t in types) {
 
-                if (dictionary.TryGetValue(t.Name, out string path)) {
+                if (dictionary.TryGetValue(t.Name, out string? path)) {
 
                     Sprite? _s = (Sprite?)Convert.ChangeType(Activator.CreateInstance(t), t);
 
@@ -214,7 +213,7 @@ internal class I_Splash: Instance {
 
             foreach (Type t in types) {
 
-                if (dictionary.TryGetValue(t.Name, out string path)) {
+                if (dictionary.TryGetValue(t.Name, out string? _)) {
 
                     Sound? _s = (Sound?)Convert.ChangeType(Activator.CreateInstance(t), t);
 
