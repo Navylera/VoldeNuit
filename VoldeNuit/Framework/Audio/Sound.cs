@@ -30,7 +30,7 @@ public partial class Sound {
 
     public string? sound_path { get; init; } = null;
 
-    private SoundEffect _sfx;
+    private SoundEffect _sfx = null!;
 
     internal SoundEffect sfx { 
         
@@ -65,7 +65,7 @@ public partial class Sound {
                 }
             }
 
-            _sfx = _sfx?? load_sfx(GetType().Name);
+            _sfx = _sfx?? load_sfx(GetType().Name)!;
 
             return _sfx;
         }

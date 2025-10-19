@@ -72,7 +72,7 @@ public partial class Font {
 
         using FileStream fstream = new FileStream($"{_path}{name}_font_texture_{_page}.png", FileMode.Create);
 
-        using MagickImage image = new MagickImage(_byte_texture[_page], 
+        using MagickImage image = new MagickImage(_byte_texture[_page]!, 
                                   new MagickReadSettings() {
                                       Width = (uint)width_texture, Height = (uint)width_texture,
                                       Format = MagickFormat.Rgba
@@ -225,7 +225,7 @@ public partial class Font {
 
             using StreamReader sreader = new StreamReader(fstream);
 
-            foreach (char c in range) { _dict_char_data.Add(c, uint.Parse(sreader.ReadLine())); }
+            foreach (char c in range) { _dict_char_data.Add(c, uint.Parse(sreader.ReadLine()!)); }
 
             fstream.Close();
             fstream.Dispose();
@@ -319,20 +319,20 @@ public partial class Font {
 
                     int xpos_pstring = (int)xpos-(isize_font*pstring.Length);
 
-                    drawables.Text(xpos_pstring, ypos, pstring).Draw(array_texture_image[_page]);
+                    drawables.Text(xpos_pstring, ypos, pstring).Draw(array_texture_image[_page]!);
 
                     Rectangle region = new Rectangle(xpos_pstring, (int)(ypos-size_font), 
                                                      width_texture, _vmod
                     );
 
-                    using IPixelCollection<byte> pdata = array_texture_image[_page].GetPixels();
+                    using IPixelCollection<byte> pdata = array_texture_image[_page]!.GetPixels();
 
                     // Assign
 
                     _byte_texture[_page] = _byte_texture[_page]?? new byte[4*width_texture*width_texture];
 
-                    _set_byte_data_region(_byte_texture[_page], width_texture, region,
-                                          pdata.ToByteArray(PixelMapping.RGBA), width_texture, region
+                    _set_byte_data_region(_byte_texture[_page]!, width_texture, region,
+                                          pdata.ToByteArray(PixelMapping.RGBA)!, width_texture, region
                     );
 
                     drawables = _assign_drawables(_path+name);
@@ -350,7 +350,7 @@ public partial class Font {
                         xpos = 0;
                         ypos = size_font;
 
-                        _flush(array_texture_image);
+                        _flush(array_texture_image!);
                     }
 
                     pre_space = 0;
@@ -385,7 +385,7 @@ public partial class Font {
 
             using IPixelCollection<byte> chr_ipc = char_insp.GetPixels();
 
-            byte[] chr_pdata = chr_ipc.ToByteArray(PixelMapping.RGBA);
+            byte[] chr_pdata = chr_ipc.ToByteArray(PixelMapping.RGBA)!;
 
             int l = 0;
             int r = isize_font-1;
@@ -430,7 +430,7 @@ public partial class Font {
 
             if (ypos > width_texture) {
 
-                _flush(array_texture_image);
+                _flush(array_texture_image!);
 
                 ypos = size_font;
             }
@@ -444,7 +444,7 @@ public partial class Font {
 
             _byte_texture[_page] = _byte_texture[_page]?? new byte[4*width_texture*width_texture];
 
-            _set_byte_data_region(_byte_texture[_page], 
+            _set_byte_data_region(_byte_texture[_page]!, 
                                   width_texture,
                                   new Rectangle((int)xpos, (int)ypos-isize_font, 
                                                 (int)width_char, _vmod), 
@@ -457,7 +457,7 @@ public partial class Font {
             ci = ci+1;
         }
 
-        _flush(array_texture_image);
+        _flush(array_texture_image!);
 
         // Write metadata
 

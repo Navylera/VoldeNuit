@@ -87,7 +87,7 @@ public abstract partial class Instance {
 
         Instance? _instance = (Instance?)Convert.ChangeType(Activator.CreateInstance(object_name), object_name);
 
-        if (_instance == null) { return null; }
+        if (_instance == null) { _stacktrace(ExConstants.ARGUMENT_NOT_ALLOWED); return null!; }
 
         _instance.x = x;
         _instance.y = y;

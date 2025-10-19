@@ -25,7 +25,7 @@ public partial class Sprite {
         _disposed = true; return;
     }
 
-    internal byte[] _cache_partial_texture;
+    internal byte[] _cache_partial_texture = null!;
 
     internal bool _flag_cache_modified = true;
 
@@ -39,7 +39,7 @@ public partial class Sprite {
 
         using IPixelCollection<byte> pdata = image.GetPixels();
 
-        _cache_partial_texture = pdata.ToByteArray(PixelMapping.RGBA);
+        _cache_partial_texture = pdata.ToByteArray(PixelMapping.RGBA)!;
 
         // If alpha == 0 => clear all RGB data
 
@@ -69,7 +69,7 @@ public partial class Sprite {
                                           (int)image.Width, (int)image.Height
         );
 
-        byte[] parray = pdata.ToByteArray(PixelMapping.RGBA);
+        byte[] parray = pdata.ToByteArray(PixelMapping.RGBA)!;
 
         // If alpha == 0 => clear all RGB data
 
@@ -87,7 +87,7 @@ public partial class Sprite {
         return texture;
     }
 
-    private static Texture2D _load_texture(string directory, string target) {
+    private static Texture2D? _load_texture(string directory, string target) {
 
         string path_target = directory+separator+target;
 
@@ -113,7 +113,7 @@ public partial class Sprite {
         return ret;
     }
 
-    internal static Texture2D load_texture(string name_file) {
+    internal static Texture2D? load_texture(string name_file) {
 
         StringBuilder sbuilder = new StringBuilder();     
 

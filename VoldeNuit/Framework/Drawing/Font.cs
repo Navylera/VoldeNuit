@@ -4,11 +4,11 @@ namespace VoldeNuit.Framework.Drawing;
 
 public partial class Font {
 
-    public string name { get; init; }
+    public string name { get; init; } = null!;
 
     public uint size_font { get; init; }
 
-    public string range { internal get; set; }
+    public string range { internal get; set; } = null!;
 
     internal readonly Dictionary<char, uint> _dict_char_data = [];
 
@@ -20,7 +20,7 @@ public partial class Font {
 
     internal int _vmod;
 
-    private string _path;
+    private string _path = null!;
 
     internal enum FontType {
 

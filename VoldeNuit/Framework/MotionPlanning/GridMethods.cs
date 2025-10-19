@@ -36,7 +36,7 @@ public partial class Grid {
 
     public void InitInstance(Instance instance, bool precision) {
 
-        Sprite mask = instance.mask_index;
+        Sprite mask = instance.mask_index!;
 
         if (mask == null) return;
         

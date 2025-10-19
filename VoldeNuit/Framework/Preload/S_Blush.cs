@@ -14,11 +14,13 @@ internal class S_Blush: Sprite {
 
     public S_Blush() {
 
+        // TODO: Use texture_path
+
         Assembly asb = Assembly.GetExecutingAssembly();
 
         string directory = asb.GetManifestResourceNames().First(n => n.EndsWith("S_Blush.png"));
 
-        using Stream stream = asb.GetManifestResourceStream(directory);
+        using Stream stream = asb.GetManifestResourceStream(directory)!;
 
         using MagickImage image = new MagickImage(stream, MagickFormat.Png);
 
@@ -27,7 +29,7 @@ internal class S_Blush: Sprite {
 
         using IPixelCollection<byte> pdata = image.GetPixels();
 
-        byte[] parray = pdata.ToByteArray(PixelMapping.RGBA);
+        byte[] parray = pdata.ToByteArray(PixelMapping.RGBA)!;
 
         for (int i=3; i<parray.Length; i=i+4) {
             

@@ -23,7 +23,7 @@ public partial class Grid {
     public const int SOLID = -1;
     public const int UNDEFINED = -2;
 
-    internal Instance? _ci = null;
+    internal Instance _ci = null!;
 
     public int this[int h, int v] {
 
