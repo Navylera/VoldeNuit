@@ -102,9 +102,11 @@ public static partial class Heart {
 
     internal static Assembly assembly = null!;
 
+    internal static Assembly _assembly = Assembly.GetExecutingAssembly();
+
     internal static char separator = Path.DirectorySeparatorChar;
 
-    internal static string version = "2.2.2";
+    internal static string version = _assembly.GetName().Version!.ToString()[..^2];
 
     internal static Progress _progress = Progress.BEGIN_STEP;
 
@@ -121,6 +123,8 @@ public static partial class Heart {
     
     // Core functions
     public static void InitMonoGameEnvironment(Assembly assembly, Game game, GraphicsDeviceManager gdeviceManager) { 
+
+        if (Heart.assembly != null) { return; }
         
         Heart.assembly = assembly;
 
@@ -141,14 +145,12 @@ public static partial class Heart {
     public static void InitResolution(int width, int height) {
 
         _entry.width = width; _entry.height = height;
+    }    
+
+    public static void InitSplashColor(uint color) {
+
+        _entry.color = color;
     }
-
-    // On v2.3.0
-
-    // public static void InitSplashColor(uint color) {
-
-    //     _entry.color = color;
-    // }
 
     public static void InitEntryPoint(Type room) {
 
@@ -170,18 +172,24 @@ public static partial class Heart {
         foreach (Instance instance in _beat_copy) { 
 
             if (instance != null && !instance._disposed) { instance._Begin_Step(); };
+
+            if (_beat_copy.Count == 0) { break; }
         }
 
         _progress = Progress.STEP;
         foreach (Instance instance in _beat_copy) { 
 
             if (instance != null && !instance._disposed) { instance._Step(); };
+
+            if (_beat_copy.Count == 0) { break; }
         }
 
         _progress = Progress.END_STEP;
         foreach (Instance instance in _beat_copy) { 
         
             if (instance != null && !instance._disposed) { instance._End_Step(); };
+
+            if (_beat_copy.Count == 0) { break; }
         }
 
         List<SoundInstance> _sicp = [.._soundinstance];
@@ -240,6 +248,7 @@ public static partial class Heart {
     public static void Draw() {
 
         List<DrawData> _ndraw = [];
+        List<DrawData> _gdraw = [];
 
         foreach (Camera c in room_current.camera) {
 
@@ -253,7 +262,12 @@ public static partial class Heart {
 
             _ndraw.Clear();
 
-            foreach (DrawData d in _draw) { if (!d.gui) { _ndraw.Add(d); } }
+            foreach (DrawData d in _draw) { 
+                
+                if (!d.gui) { _ndraw.Add(d); continue; }
+
+                _gdraw.Add(d);
+            }
 
             foreach (DrawData drd in _ndraw) { 
 
@@ -316,11 +330,10 @@ public static partial class Heart {
                               _color_to_xna(c.colorfilter)
             );
         }
+
         _ndraw.Clear();
 
-        foreach (DrawData d in _draw) { if (d.gui == false) { _ndraw.Add(d); } }
-
-        foreach (DrawData drd in _ndraw) {
+        foreach (DrawData drd in _gdraw) {
 
             float radian = drd.angle%(2*float.Pi);
 
@@ -354,13 +367,15 @@ public static partial class Heart {
                               new Vector2(drd.x, drd.y), 
                               drd.region, 
                               _color_to_xna(drd.color), 
-                              -radian, 
+                              radian, 
                               new Vector2(drd.vx, drd.vy), 
                               new Vector2(float.Abs(drd.image_xscale), 
                                           float.Abs(drd.image_yscale)
                               ), spe, 0f
             );
         }
+
+        _gdraw.Clear();
 
         _spritebatch.End();
     }
