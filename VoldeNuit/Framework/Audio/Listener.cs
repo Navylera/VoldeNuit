@@ -12,13 +12,13 @@ public partial class Listener {
     public float x = 0f;
     public float y = 0f;
 
-    private Vector2 _speed = new Vector2(0, 0);
+    internal Vector2 _speed = new Vector2(0, 0);
 
     public float hspeed { get => _speed.X; set { _speed.X = value; } }
 
     public float vspeed { get => _speed.Y; set { _speed.Y = value; } }
 
-    private int _sign_speed = 0;
+    internal int _sign_speed = 0;
 
     public float speed {
 
