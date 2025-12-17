@@ -254,7 +254,7 @@ public static partial class Heart {
 
             _graphicsDeviceManager.GraphicsDevice.SetRenderTarget(c.view._render_target);
 
-            MonoColor color = _color_to_xna(room_current.color_background);
+            MonoColor color = color_to_xna(room_current.color_background);
 
             _graphicsDeviceManager.GraphicsDevice.Clear(color);
 
@@ -302,7 +302,7 @@ public static partial class Heart {
                 _spritebatch.Draw(drd.texture,
                                   new Vector2(drd.x-c.view.x, drd.y-c.view.y), 
                                   drd.region, 
-                                  _color_to_xna(drd.color), 
+                                  color_to_xna(drd.color), 
                                   radian, 
                                   new Vector2(drd.vx, drd.vy), 
                                   new Vector2(float.Abs(drd.image_xscale), 
@@ -327,7 +327,7 @@ public static partial class Heart {
             _spritebatch.Draw(c.view._render_target,
                               new Rectangle(c.viewport.x, c.viewport.y, 
                                             c.viewport.width, c.viewport.height),
-                              _color_to_xna(c.colorfilter)
+                              color_to_xna(c.colorfilter)
             );
         }
 
@@ -366,7 +366,7 @@ public static partial class Heart {
             _spritebatch.Draw(drd.texture,
                               new Vector2(drd.x, drd.y), 
                               drd.region, 
-                              _color_to_xna(drd.color), 
+                              color_to_xna(drd.color), 
                               radian, 
                               new Vector2(drd.vx, drd.vy), 
                               new Vector2(float.Abs(drd.image_xscale), 

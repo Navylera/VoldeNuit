@@ -39,7 +39,7 @@ public static class Surface {
 
     public static void surface_clear(uint color) {
         
-        _graphicsDeviceManager.GraphicsDevice.Clear(Color._color_to_xna(color));
+        _graphicsDeviceManager.GraphicsDevice.Clear(Color.color_to_xna(color));
 
         return;
     }

@@ -124,7 +124,7 @@ public static class Color {
         }
     }
 
-    internal static Microsoft.Xna.Framework.Color _color_to_xna(uint color) {
+    public static Microsoft.Xna.Framework.Color color_to_xna(uint color) {
 
         switch (COLOR_FORMAT) {   
             
@@ -156,5 +156,10 @@ public static class Color {
         }
 
         return new Microsoft.Xna.Framework.Color();
+    }
+
+    public static Microsoft.Xna.Framework.Color ColorToXna(uint color) {
+
+        return color_to_xna(color);
     }
 }

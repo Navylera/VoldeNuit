@@ -45,7 +45,7 @@ internal class I_Splash: Instance {
 
     internal float blush = 0f;
 
-    MonoColor color = Color._color_to_xna(0);
+    MonoColor color = Color.color_to_xna(0);
 
     internal int scale = 1;
 

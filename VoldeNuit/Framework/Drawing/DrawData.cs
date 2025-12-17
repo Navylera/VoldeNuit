@@ -97,7 +97,7 @@ internal partial class DrawData {
         _spritebatch.Draw(texture,
                           new Vector2(x, y), 
                           region, 
-                          Color._color_to_xna(color), 
+                          Color.color_to_xna(color), 
                           -radian, 
                           new Vector2(vx, vy), 
                           new Vector2(float.Abs(image_xscale), 
