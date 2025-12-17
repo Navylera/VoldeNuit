@@ -1,3 +1,4 @@
+using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Audio;
 
 namespace VoldeNuit.Framework.Audio;
@@ -208,11 +209,16 @@ public partial class SoundInstance {
 
         // Doppler
 
-        if (float.Abs(emitter.speed_sound) >= Configuration.EPSILON) {
+        Vector2 uv = new Vector2(listener.x-emitter.x, listener.y-emitter.y);
+        uv.Normalize();
 
-            doppler = float.Cos(float.Abs(listener.direction-emitter.direction))*
-                      (emitter.speed_sound-listener.speed)/
-                      (emitter.speed_sound-emitter.speed)
+        float srad = Vector2.Dot(emitter._sign_speed*emitter._speed, uv);
+
+        if (srad >= Configuration.EPSILON) {
+
+            doppler = (emitter.speed_sound-
+                       Vector2.Dot(listener._sign_speed*listener._speed, uv))/
+                      (emitter.speed_sound-srad)
             ;
         }
 

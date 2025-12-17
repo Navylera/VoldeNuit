@@ -32,13 +32,11 @@ internal class DefaultFont: Font {
 
         Stream stream;
 
-        Assembly asb = Assembly.GetExecutingAssembly();
-
         for (int i=0; i<2; i=i+1) {
 
-            directory = asb.GetManifestResourceNames().First(n => n.EndsWith($"Galmuri9.ttf_font_texture_{i}.png"));
+            directory = _assembly.GetManifestResourceNames().First(n => n.EndsWith($"Galmuri9.ttf_font_texture_{i}.png"));
 
-            stream = asb.GetManifestResourceStream(directory);
+            stream = _assembly.GetManifestResourceStream(directory)!;
 
             using MagickImage image = new MagickImage(stream, MagickFormat.Png);
 
@@ -54,9 +52,9 @@ internal class DefaultFont: Font {
             stream.Dispose();
         }
 
-        directory = asb.GetManifestResourceNames().First(n => n.EndsWith("Galmuri9.ttf_data"));
+        directory = _assembly.GetManifestResourceNames().First(n => n.EndsWith("Galmuri9.ttf_data"));
 
-        stream = asb.GetManifestResourceStream(directory);
+        stream = _assembly.GetManifestResourceStream(directory)!;
 
         stream.Seek(0, SeekOrigin.Begin);
 

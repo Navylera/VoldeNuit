@@ -8,25 +8,32 @@ using static Configuration;
 
 public partial class Sprite {
 
+    public bool embedded = false;
+
     internal Texture2D? _texture = null;
 
-    public Texture2D? texture {
+    internal Texture2D? texture {
 
         get { 
 
             if (_texture == null && GetType().Name == "Sprite") { return null; }
 
-            if (_texture == null && texture_path != null && File.Exists(texture_path)) {
+            if (_texture == null && texture_path != null) {
 
-                if (texture_path.EndsWith("xnb") &&
+                // Embedded resources support only .png files.
+
+                if (texture_path.EndsWith("png") &&
+                    embedded || File.Exists(texture_path)) {
+                    
+                    _texture = _import(embedded, texture_path);
+                }
+
+                if (!embedded &&
+                    File.Exists(texture_path) &&
+                    texture_path.EndsWith("xnb") &&
                     CONTENT_PATH == $".{separator}Content{separator}") {
 
                     _texture = _main.Content.Load<Texture2D>(texture_path[10..^4]);
-                }
-
-                if (texture_path.EndsWith("png")) {
-                    
-                    _texture = _import(texture_path);
                 }
             }
 

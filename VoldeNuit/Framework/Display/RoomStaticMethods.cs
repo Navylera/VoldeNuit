@@ -25,8 +25,6 @@ public partial class Room {
 
         Room? dst = null;
 
-        // foreach (Room r in _room) { if (r.GetType() == name_room) { dst = r; break; } }
-
         List<Instance> ilist = [.._instance_id, .._instance_id_deactivated];
 
         foreach (Instance instance in ilist) { 
@@ -38,7 +36,7 @@ public partial class Room {
 
         List<SoundInstance> slist = [.._soundinstance];
 
-        foreach (SoundInstance si in slist) { si.Dispose(); }
+        foreach (SoundInstance si in slist) { si.Dispose(); }        
 
         _beat_copy.Clear();
 

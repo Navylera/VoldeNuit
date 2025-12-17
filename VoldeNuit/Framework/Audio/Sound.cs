@@ -13,6 +13,8 @@ using static Exception;
 
 public partial class Sound {
 
+    public bool embedded = false;
+
     internal float _volume = 1f;
 
     public float volume {
@@ -44,6 +46,10 @@ public partial class Sound {
 
                     case "xnb": {
 
+                        // Embedded resources support only .wav and .ogg files.
+
+                        if (embedded) { return null!; }
+
                         if (CONTENT_PATH != $".{separator}Content{separator}") { break; }
 
                         _sfx = _main.Content.Load<SoundEffect>(sound_path[10..^4]);
@@ -53,12 +59,16 @@ public partial class Sound {
 
                     case "wav": {
 
-                        _sfx = SoundEffect.FromFile($"{sound_path}.wav"); break;
+                        _sfx = embedded? 
+                               SoundEffect.FromStream(_assembly.GetManifestResourceStream(sound_path)!):
+                               SoundEffect.FromFile($"{sound_path}.wav");
+
+                        break;
                     }
 
                     case "ogg": {
 
-                        _sfx = _read_ogg($"{sound_path}.ogg");
+                        _sfx = _read_ogg(embedded, $"{sound_path}.ogg");
 
                         break;
                     }
@@ -90,7 +100,7 @@ public partial class Sound {
 
         if (File.Exists($"{path_target}.ogg")) {
 
-            return _read_ogg($"{path_target}.ogg");
+            return _read_ogg(false, $"{path_target}.ogg");
         }
 
         string[] array_directories = Directory.GetDirectories(directory);
@@ -124,11 +134,14 @@ public partial class Sound {
         return sfx;
     }
 
-    internal static SoundEffect _read_ogg(string sound_path) {
+    internal static SoundEffect _read_ogg(bool embedded, string sound_path) {
 
-        FileStream fstream = File.OpenRead(sound_path);
+        Stream stream = embedded?
+                        _assembly.GetManifestResourceStream(sound_path)!:
+                        File.OpenRead(sound_path)
+        ;
 
-        VorbisReader vreader = new VorbisReader(fstream, true);
+        VorbisReader vreader = new VorbisReader(stream, true);
 
         int samplerate = vreader.SampleRate;
         int channels = vreader.Channels;
@@ -155,8 +168,8 @@ public partial class Sound {
         SoundEffect sfx = new SoundEffect(output, samplerate, 
                                           channels == 1? AudioChannels.Mono: AudioChannels.Stereo);
 
-        fstream.Close();
-        fstream.Dispose();
+        stream.Close();
+        stream.Dispose();
 
         vreader.Dispose();
 

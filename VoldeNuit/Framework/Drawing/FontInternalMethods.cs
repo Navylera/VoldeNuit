@@ -91,9 +91,6 @@ public partial class Font {
                                                          (uint)width_texture, (uint)width_texture
             );
 
-            array_texture_image[_page] = new MagickImage(
-            );
-
             _texture_font[_page] = new Texture2D(_graphicsDeviceManager.GraphicsDevice,
                                                  width_texture, width_texture
             );
@@ -116,6 +113,12 @@ public partial class Font {
 
         int isize_font = (int)size_font;
 
+        _vmod = isize_font+(int)(size_font/10);
+        
+        uint hcorrection = 1;
+
+        if (size_font >= 20) { hcorrection = (size_font/10); }
+
         StringBuilder sbuilder = new StringBuilder();     
 
         sbuilder.Clear().Append(CONTENT_PATH);
@@ -128,8 +131,6 @@ public partial class Font {
 
         string file_name_metadata = $"{_path}{separator}{name}_metadata";
         string file_name_data     = $"{_path}{separator}{name}_data";
-
-        bool flag_modify_needed = false;
 
         string string_hash;
 
@@ -146,92 +147,92 @@ public partial class Font {
 
         FileStream fstream;
 
-        // Check modified
+        // Check whether font data is modified
 
-        while (!flag_modify_needed) {
+        if (!File.Exists(file_name_metadata) || !File.Exists(file_name_data)) {
 
-            if (!File.Exists(file_name_metadata) ||
-                !File.Exists(file_name_data)) {
-
-                flag_modify_needed = true; break;
-            }
-
-            fstream = File.Open(file_name_metadata, FileMode.Open, FileAccess.Read);
-
-            fstream.Seek(0, SeekOrigin.Begin);
-
-            byte[] array_byte = new byte[1024];
-
-            while (fstream.Read(array_byte, 0, array_byte.Length) > 0) {
-
-                sbuilder.Append(new UTF8Encoding().GetString(array_byte));
-            }
-
-            fstream.Close();
-            fstream.Dispose();
-
-            string[] array_metadata = sbuilder.ToString().Split(" ");
-
-            // [0]font_name
-            // [1]font_size
-            // [2]texture_page_count
-            // [3]version
-            // [4]string_hash
-
-            if (array_metadata.Length < 5) { flag_modify_needed = true; break; }
-
-            if (array_metadata[0] != name ||
-                array_metadata[1] != size_font.ToString() ||
-                array_metadata[3] != version ||
-                array_metadata[4] != string_hash) {
-
-                flag_modify_needed = true; break;
-            }
-
-            for (int i=0; i<Convert.ToInt32(array_metadata[2]); i=i+1) {
-
-                if (File.Exists($"{_path}{name}_font_texture_{i}.png")) { continue; }
-
-                flag_modify_needed = true; break;
-            }
-
-            if (!flag_modify_needed) { break; }
+            goto MODIFIED;
         }
 
-        // Not Modified
+        fstream = File.Open(file_name_metadata, FileMode.Open, FileAccess.Read);
 
-        if (!flag_modify_needed) {
+        fstream.Seek(0, SeekOrigin.Begin);
 
-            for (int i=0; i<4; i=i+1) {
+        byte[] array_byte = new byte[1024];
 
-                if (!File.Exists($"{_path}{name}_font_texture_{i}.png")) { break; }
+        int rbyte;
 
-                using MagickImage image = new MagickImage($"{_path}{name}_font_texture_{i}.png", MagickFormat.Png);
+        while ((rbyte = fstream.Read(array_byte, 0, array_byte.Length)) > 0) {
 
-                using IPixelCollection<byte> pdata = image.GetPixels();
-
-                _texture_font[i] = new Texture2D(_graphicsDeviceManager.GraphicsDevice,
-                                                 (int)image.Width, (int)image.Height
-                );
-
-                _byte_texture[i] = pdata.ToByteArray(PixelMapping.RGBA);
-            }
-
-            // Load metadata to Dictionary
-
-            fstream = File.Open(file_name_data, FileMode.Open, FileAccess.Read);
-
-            fstream.Seek(0, SeekOrigin.Begin);
-
-            using StreamReader sreader = new StreamReader(fstream);
-
-            foreach (char c in range) { _dict_char_data.Add(c, uint.Parse(sreader.ReadLine()!)); }
-
-            fstream.Close();
-            fstream.Dispose();
-
-            return;
+            sbuilder.Append(new UTF8Encoding().GetString(array_byte[..rbyte]));
         }
+
+        fstream.Close();
+        fstream.Dispose();
+
+        string[] array_metadata = sbuilder.ToString().Split(" ");
+
+        // [0]font_name
+        // [1]font_size
+        // [2]texture_page_count
+        // [3]version
+        // [4]string_hash
+
+        if (array_metadata.Length < 5) { goto MODIFIED; }
+
+        if (array_metadata[0] != name ||
+            array_metadata[1] != size_font.ToString() ||
+            array_metadata[3] != version ||
+            array_metadata[4] != string_hash) {
+
+            goto MODIFIED;
+        }
+
+        for (int i=0; i<Convert.ToInt32(array_metadata[2]); i=i+1) {
+
+            if (File.Exists($"{_path}{name}_font_texture_{i}.png")) { continue; }
+
+            goto MODIFIED;
+        }
+
+        goto UNMODIFIED;
+
+        UNMODIFIED:
+
+        for (int i=0; i<4; i=i+1) {
+
+            if (!File.Exists($"{_path}{name}_font_texture_{i}.png")) { break; }
+
+            using MagickImage image = new MagickImage($"{_path}{name}_font_texture_{i}.png", MagickFormat.Png);
+
+            using IPixelCollection<byte> pdata = image.GetPixels();
+
+            _texture_font[i] = new Texture2D(_graphicsDeviceManager.GraphicsDevice,
+                                             (int)image.Width, (int)image.Height
+            );
+
+            _byte_texture[i] = pdata.ToByteArray(PixelMapping.RGBA);
+        }
+
+        // Load metadata to Dictionary
+
+        fstream = File.Open(file_name_data, FileMode.Open, FileAccess.Read);
+
+        fstream.Seek(0, SeekOrigin.Begin);
+
+        StreamReader sreader = new StreamReader(fstream);
+
+        foreach (char c in range) { _dict_char_data.Add(c, uint.Parse(sreader.ReadLine()!)); }
+
+        fstream.Close();
+        fstream.Dispose();
+
+        sreader.Close();
+        sreader.Dispose();
+
+        return;
+
+        MODIFIED:
 
         if (File.Exists(file_name_metadata)) {
 
@@ -257,7 +258,7 @@ public partial class Font {
             }
         }
 
-        int size_texture = range.Length*isize_font*(isize_font+1);
+        int size_texture = range.Length*isize_font*(isize_font+(int)hcorrection);
 
         int width_texture = 1<<(int)float.Ceiling(float.Log2(float.Ceiling(float.Sqrt(size_texture))));
 
@@ -298,8 +299,6 @@ public partial class Font {
         uint data;
 
         uint pre_space = 0;
-
-        _vmod = isize_font+1+(int)(size_font/10);
 
         while (ci < asize) {
 
@@ -416,9 +415,11 @@ public partial class Font {
 
             CHECK_DONE:
 
-            width_char = (uint)(r-l)+1;
+            width_char = (uint)(r-l)+hcorrection;
 
-            xpos = xpos+pre_space+1;
+            uint scor = (uint)(width_char%hcorrection > 0? 1: 0);
+
+            xpos = xpos+pre_space+hcorrection-scor;
 
             if (xpos > width_texture-width_char) {
 

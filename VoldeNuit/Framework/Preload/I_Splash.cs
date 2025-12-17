@@ -45,7 +45,9 @@ internal class I_Splash: Instance {
 
     internal float blush = 0f;
 
-    MonoColor color = Color._color_to_xna(0);
+    MonoColor color = Color.color_to_xna(0);
+
+    internal int scale = 1;
 
     public I_Splash() {
 
@@ -120,7 +122,7 @@ internal class I_Splash: Instance {
         List<Type> fonttypes   = [..types.Where(t => t.BaseType == typeof(Font))];
         List<Type> soundtypes  = [..types.Where(t => t.BaseType == typeof(Sound))];
 
-        _traversal(dsprite, $"{sbuilder}Sprite", ["png"]);
+        _traversal(dsprite, $"{sbuilder}Sprite", ["xnb", "png"]);
         _traversal(dsound, $"{sbuilder}Sound", ["wav", "xnb", "ogg"]);
 
         tcount = spritetypes.Count+fonttypes.Count+soundtypes.Count;
@@ -231,20 +233,17 @@ internal class I_Splash: Instance {
 
     public override void Draw() {
 
-        draw_self();
+        draw_sprite_ext(sprite_index!, image_index, x, y, 1, 1, 0, _entry.tcolor, 1);
         
-        draw_set_color(0xffffff);
+        draw_set_color(_entry.tcolor);
 
-        draw_rectangle(x-120, y+50, 240, 14, true);
+        draw_rectangle(x-(120*scale), y+(50*scale), 240*scale, 14*scale, true);
 
         int progress = 240;
 
-        if (tcount > 0) {
-            
-            progress = 240*(pcount/tcount);
-        }
+        if (tcount > 0) { progress = 240*(pcount/tcount); }
 
-        draw_rectangle(x-120, y+51, progress, 13, false);
+        draw_rectangle(x-(120*scale), y+(50*scale), progress*scale, 14*scale, false);
 
         draw_set_halign(fa_center);        
 
@@ -252,29 +251,33 @@ internal class I_Splash: Instance {
 
         _graphicsDeviceManager.GraphicsDevice.Clear(color);
 
-        draw_set_color(0xffffffu);
-
         draw_text(120, 0, message[..^(int)(float.Floor(progressindex))]);
 
         _graphicsDeviceManager.GraphicsDevice.SetRenderTarget(message_violet);
 
         _graphicsDeviceManager.GraphicsDevice.Clear(color);
 
-        draw_set_color(_entry.color);
+        draw_set_color(_entry.bcolor);
 
         draw_text(120, 0, message[..^(int)(float.Floor(progressindex))]);
 
+        _graphicsDeviceManager.GraphicsDevice.SetRenderTarget(null);
+
         draw_set_color(0xffffffu);
 
-        _graphicsDeviceManager.GraphicsDevice.SetRenderTarget(null);
-        
-        draw_texture_part(message_white, progress, 0, 240-progress, 11, x-120+progress, y+51);
-        draw_texture_part(message_violet, 0, 0, progress, 11, x-120, y+51);
+        draw_texture_ext(message_white, x-(120*scale), y+(51*scale),
+                         scale, scale, 0, 0, 0f, _entry.tcolor, 1f
+        );
+
+        draw_texture_part_ext(message_violet, 0, 0, progress, 11, 
+                              x-(120*scale), y+(51*scale),
+                              scale, scale, 0xffffffu, 1f
+        );
 
         draw_set_halign(fa_right);
 
-        draw_text(640-10, 480-35, $"VoldeNuit Framework v.{version}");
-        draw_text(640-10, 480-20, "https://github.com/Navylera/VoldeNuit");
+        draw_set_color(_entry.tcolor);
+        draw_text((room_width-10)*scale, (room_height-35)*scale, $"VoldeNuit Framework v.{version}\nhttps://github.com/Navylera/VoldeNuit", scale, scale);
 
         int block = room_width/20;
         
@@ -290,14 +293,14 @@ internal class I_Splash: Instance {
                 float iindex = 16*(1-(i-fillwidth)/(float)blushwidth);
 
                 draw_sprite_ext(Instantiate(typeof(S_Blush)), iindex,
-                                i, k, 1, 1, 0, _entry.color, 1
+                                i, k, 1, 1, 0, _entry.bcolor, 1
                 );
             }
         }
 
         EXITCOLOR: 
 
-        draw_set_color(_entry.color);
+        draw_set_color(_entry.bcolor);
         draw_rectangle(0, 0, int.Clamp(fillwidth, 0, room_width), room_height);
 
         if (blush <= 6) { return; }
