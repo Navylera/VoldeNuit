@@ -98,7 +98,7 @@ public static partial class Heart {
 
     internal static SpriteBatch _spritebatch = null!;
 
-    internal static (int width, int height, Type point, uint color) _entry;
+    internal static (int width, int height, Type point, uint bcolor, uint tcolor) _entry = (1, 1, null!, 0xffde5bu, 0x0u);
 
     internal static Assembly assembly = null!;
 
@@ -147,9 +147,14 @@ public static partial class Heart {
         _entry.width = width; _entry.height = height;
     }    
 
-    public static void InitSplashColor(uint color) {
+    public static void InitSplashBgColor(uint color) {
 
-        _entry.color = color;
+        _entry.bcolor = color;
+    }
+
+    public static void InitSplashTextColor(uint color) {
+
+        _entry.tcolor = color;
     }
 
     public static void InitEntryPoint(Type room) {
