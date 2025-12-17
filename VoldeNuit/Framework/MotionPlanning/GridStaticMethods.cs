@@ -43,7 +43,9 @@ public partial class Grid {
 
     public static void mp_grid_add_instances(Grid grid, Instance instance, bool precision) {
 
-        Sprite mask = instance.mask_index;
+        if (instance == null) { return; }
+
+        Sprite? mask = instance.mask_index;
 
         if (mask == null) return;
         
