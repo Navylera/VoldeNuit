@@ -233,15 +233,19 @@ internal class I_Splash: Instance {
 
     public override void Draw() {
 
-        draw_self();
+        draw_sprite_ext(sprite_index!, image_index, x, y, 1, 1, 0, _entry.tcolor, 1);
         
-        draw_set_color(0xffffff);
+        draw_set_color(_entry.tcolor);
 
         draw_rectangle(x-(120*scale), y+(50*scale), 240*scale, 14*scale, true);
 
         int progress = 240;
 
-        if (tcount > 0) { progress = 240*(pcount/tcount); }
+        // if (tcount > 0) { progress = 240*(pcount/tcount); }
+
+        progress = 120;
+
+        // draw_set_color(_entry.tcolor);
 
         draw_rectangle(x-(120*scale), y+(50*scale), progress*scale, 14*scale, false);
 
@@ -251,7 +255,7 @@ internal class I_Splash: Instance {
 
         _graphicsDeviceManager.GraphicsDevice.Clear(color);
 
-        draw_set_color(0xffffffu);
+        // draw_set_color(_entry.tcolor);
 
         draw_text(120, 0, message[..^(int)(float.Floor(progressindex))]);
 
@@ -259,19 +263,21 @@ internal class I_Splash: Instance {
 
         _graphicsDeviceManager.GraphicsDevice.Clear(color);
 
-        draw_set_color(_entry.color);
+        draw_set_color(_entry.bcolor);
 
         draw_text(120, 0, message[..^(int)(float.Floor(progressindex))]);
 
-        draw_set_color(0xffffffu);
+        // draw_set_color(_entry.tcolor);
 
         _graphicsDeviceManager.GraphicsDevice.SetRenderTarget(null);
         
         // draw_texture_part(message_white, progress, 0, 
         //                   240-progress, 11, x-120+progress, y+51);
 
+        draw_set_color(0xffffffu);
+
         draw_texture_ext(message_white, x-(120*scale), y+(51*scale),
-                         scale, scale, 0, 0, 0f, 0xffffffu, 1f
+                         scale, scale, 0, 0, 0f, _entry.tcolor, 1f
         );
 
         // draw_texture_part(message_violet, 0, 0, progress, 11, x-120, y+51);
@@ -283,8 +289,8 @@ internal class I_Splash: Instance {
 
         draw_set_halign(fa_right);
 
-        draw_text((X-10)*scale, (Y-35)*scale, $"VoldeNuit Framework v.{version}\nhttps://github.com/Navylera/VoldeNuit", scale, scale);
-        // draw_text((X-10)*scale, (Y-20)*scale, "https://github.com/Navylera/VoldeNuit", scale, scale);
+        draw_set_color(_entry.tcolor);
+        draw_text((room_width-10)*scale, (room_height-35)*scale, $"VoldeNuit Framework v.{version}\nhttps://github.com/Navylera/VoldeNuit", scale, scale);
 
         int block = room_width/20;
         
@@ -300,14 +306,14 @@ internal class I_Splash: Instance {
                 float iindex = 16*(1-(i-fillwidth)/(float)blushwidth);
 
                 draw_sprite_ext(Instantiate(typeof(S_Blush)), iindex,
-                                i, k, 1, 1, 0, _entry.color, 1
+                                i, k, 1, 1, 0, _entry.bcolor, 1
                 );
             }
         }
 
         EXITCOLOR: 
 
-        draw_set_color(_entry.color);
+        draw_set_color(_entry.bcolor);
         draw_rectangle(0, 0, int.Clamp(fillwidth, 0, room_width), room_height);
 
         if (blush <= 6) { return; }
