@@ -241,11 +241,7 @@ internal class I_Splash: Instance {
 
         int progress = 240;
 
-        // if (tcount > 0) { progress = 240*(pcount/tcount); }
-
-        progress = 120;
-
-        // draw_set_color(_entry.tcolor);
+        if (tcount > 0) { progress = 240*(pcount/tcount); }
 
         draw_rectangle(x-(120*scale), y+(50*scale), progress*scale, 14*scale, false);
 
@@ -254,8 +250,6 @@ internal class I_Splash: Instance {
         _graphicsDeviceManager.GraphicsDevice.SetRenderTarget(message_white);
 
         _graphicsDeviceManager.GraphicsDevice.Clear(color);
-
-        // draw_set_color(_entry.tcolor);
 
         draw_text(120, 0, message[..^(int)(float.Floor(progressindex))]);
 
@@ -267,20 +261,13 @@ internal class I_Splash: Instance {
 
         draw_text(120, 0, message[..^(int)(float.Floor(progressindex))]);
 
-        // draw_set_color(_entry.tcolor);
-
         _graphicsDeviceManager.GraphicsDevice.SetRenderTarget(null);
-        
-        // draw_texture_part(message_white, progress, 0, 
-        //                   240-progress, 11, x-120+progress, y+51);
 
         draw_set_color(0xffffffu);
 
         draw_texture_ext(message_white, x-(120*scale), y+(51*scale),
                          scale, scale, 0, 0, 0f, _entry.tcolor, 1f
         );
-
-        // draw_texture_part(message_violet, 0, 0, progress, 11, x-120, y+51);
 
         draw_texture_part_ext(message_violet, 0, 0, progress, 11, 
                               x-(120*scale), y+(51*scale),
