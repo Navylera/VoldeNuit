@@ -47,6 +47,8 @@ internal class I_Splash: Instance {
 
     MonoColor color = Color._color_to_xna(0);
 
+    internal int scale = 1;
+
     public I_Splash() {
 
         halign = fa_right;
@@ -120,7 +122,7 @@ internal class I_Splash: Instance {
         List<Type> fonttypes   = [..types.Where(t => t.BaseType == typeof(Font))];
         List<Type> soundtypes  = [..types.Where(t => t.BaseType == typeof(Sound))];
 
-        _traversal(dsprite, $"{sbuilder}Sprite", ["png"]);
+        _traversal(dsprite, $"{sbuilder}Sprite", ["xnb", "png"]);
         _traversal(dsound, $"{sbuilder}Sound", ["wav", "xnb", "ogg"]);
 
         tcount = spritetypes.Count+fonttypes.Count+soundtypes.Count;
@@ -235,16 +237,13 @@ internal class I_Splash: Instance {
         
         draw_set_color(0xffffff);
 
-        draw_rectangle(x-120, y+50, 240, 14, true);
+        draw_rectangle(x-(120*scale), y+(50*scale), 240*scale, 14*scale, true);
 
         int progress = 240;
 
-        if (tcount > 0) {
-            
-            progress = 240*(pcount/tcount);
-        }
+        if (tcount > 0) { progress = 240*(pcount/tcount); }
 
-        draw_rectangle(x-120, y+51, progress, 13, false);
+        draw_rectangle(x-(120*scale), y+(50*scale), progress*scale, 14*scale, false);
 
         draw_set_halign(fa_center);        
 
@@ -268,13 +267,24 @@ internal class I_Splash: Instance {
 
         _graphicsDeviceManager.GraphicsDevice.SetRenderTarget(null);
         
-        draw_texture_part(message_white, progress, 0, 240-progress, 11, x-120+progress, y+51);
-        draw_texture_part(message_violet, 0, 0, progress, 11, x-120, y+51);
+        // draw_texture_part(message_white, progress, 0, 
+        //                   240-progress, 11, x-120+progress, y+51);
+
+        draw_texture_ext(message_white, x-(120*scale), y+(51*scale),
+                         scale, scale, 0, 0, 0f, 0xffffffu, 1f
+        );
+
+        // draw_texture_part(message_violet, 0, 0, progress, 11, x-120, y+51);
+
+        draw_texture_part_ext(message_violet, 0, 0, progress, 11, 
+                              x-(120*scale), y+(51*scale),
+                              scale, scale, 0xffffffu, 1f
+        );
 
         draw_set_halign(fa_right);
 
-        draw_text(640-10, 480-35, $"VoldeNuit Framework v.{version}");
-        draw_text(640-10, 480-20, "https://github.com/Navylera/VoldeNuit");
+        draw_text((X-10)*scale, (Y-35)*scale, $"VoldeNuit Framework v.{version}\nhttps://github.com/Navylera/VoldeNuit", scale, scale);
+        // draw_text((X-10)*scale, (Y-20)*scale, "https://github.com/Navylera/VoldeNuit", scale, scale);
 
         int block = room_width/20;
         

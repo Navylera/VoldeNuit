@@ -24,6 +24,8 @@ internal class R_Splash: Room {
         color_background = _entry.color;
 
         new I_Splash() {
+
+            scale = (int)float.Floor(scale), 
             
             x = room_width/2, y = room_height/2,
             
