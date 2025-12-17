@@ -54,7 +54,7 @@ public static partial class Draw {
     }
 
     public static void SetDrawingFont(Font font) { 
-        
+
         draw_set_font(font);
     }
 
@@ -83,6 +83,11 @@ public static partial class Draw {
     public static int GetStringWidth(string text) {
 
         return string_width(text);
+    }
+
+    public static float GetCharWidth(char c) {
+
+        return char_width(c);
     }
 
     public static void DrawTexture(Texture2D texture, float x, float y) {
