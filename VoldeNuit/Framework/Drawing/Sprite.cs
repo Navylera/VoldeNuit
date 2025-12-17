@@ -20,7 +20,7 @@ public partial class Sprite {
 
             if (_texture == null && texture_path != null) {
 
-                // Embedded resources only support .png file
+                // Embedded resources support only .png files.
 
                 if (texture_path.EndsWith("png") &&
                     embedded || File.Exists(texture_path)) {

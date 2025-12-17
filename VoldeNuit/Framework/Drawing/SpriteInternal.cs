@@ -1,4 +1,3 @@
-using System.Runtime.InteropServices;
 using System.Text;
 
 using ImageMagick;
@@ -59,11 +58,12 @@ public partial class Sprite {
         _preloaded = true;
     }
 
-    private static Texture2D _import(string path_target) {
+    private static Texture2D _import(bool embedded, string path_target) {
 
-        // TODO: add FileStream & modify texture to internal
-
-        using MagickImage image = new MagickImage(path_target, MagickFormat.Png);
+        using MagickImage image = embedded? 
+                                  new MagickImage(_assembly.GetManifestResourceStream(path_target)!): 
+                                  new MagickImage(path_target, MagickFormat.Png);
+        ;
 
         using IPixelCollection<byte> pdata = image.GetPixels();
 
@@ -99,7 +99,7 @@ public partial class Sprite {
             return _main.Content.Load<Texture2D>(path_target[10..]);
         }
 
-        if (File.Exists($"{path_target}.png")) { return _import($"{path_target}.png"); }
+        if (File.Exists($"{path_target}.png")) { return _import(false, $"{path_target}.png"); }
 
         string[] array_directories = Directory.GetDirectories(directory);
 
