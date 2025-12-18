@@ -233,7 +233,7 @@ internal class I_Splash: Instance {
 
     public override void Draw() {
 
-        draw_sprite_ext(sprite_index!, image_index, x, y, 1, 1, 0, _entry.tcolor, 1);
+        draw_sprite_ext(sprite_index!, image_index, x, y, scale, scale, 0, _entry.tcolor, 1);
         
         draw_set_color(_entry.tcolor);
 
