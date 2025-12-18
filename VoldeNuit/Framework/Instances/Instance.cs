@@ -301,7 +301,7 @@ public abstract partial class Instance {
         if (_sign_speed > 0) { speed = float.Clamp(speed-friction, 0, speed); }
         if (_sign_speed < 0) { speed = float.Clamp(speed+friction, speed, 0); }
 
-        if (!collision || !solid) { x = x+hspeed; y = y+vspeed; return; }
+        if (!collision || !solid) { x = x+hspeed; y = y+vspeed; Begin_Step(); return; }
 
         float distance = _speed.Length();
 
