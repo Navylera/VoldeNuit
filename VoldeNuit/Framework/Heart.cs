@@ -265,14 +265,14 @@ public static partial class Heart {
 
             _spritebatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, SamplerState.PointClamp);
 
-            _ndraw.Clear();
-
             foreach (DrawData d in _draw) { 
                 
                 if (!d.gui) { _ndraw.Add(d); continue; }
 
                 _gdraw.Add(d);
             }
+
+            _draw.Clear();
 
             foreach (DrawData drd in _ndraw) { 
 
@@ -319,8 +319,6 @@ public static partial class Heart {
             _spritebatch.End();
         }
 
-        _draw.Clear();
-
         _graphicsDeviceManager.GraphicsDevice.SetRenderTarget(null);
 
         _spritebatch.Begin(SpriteSortMode.BackToFront, BlendState.AlphaBlend, SamplerState.PointClamp);
@@ -336,7 +334,11 @@ public static partial class Heart {
             );
         }
 
+        _spritebatch.End();
+
         _ndraw.Clear();
+
+        _spritebatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, SamplerState.PointClamp);
 
         foreach (DrawData drd in _gdraw) {
 
@@ -380,8 +382,8 @@ public static partial class Heart {
             );
         }
 
-        _gdraw.Clear();
-
         _spritebatch.End();
+
+        _gdraw.Clear();
     }
 }
