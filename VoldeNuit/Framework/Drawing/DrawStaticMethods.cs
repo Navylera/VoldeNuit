@@ -1,4 +1,3 @@
-using System.Text;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 
@@ -37,7 +36,8 @@ public static partial class Draw {
         return;
     }
 
-    public static void draw_rectangle(float x, float y, int width, int height, bool outline = false) {
+    public static void draw_rectangle(float x, float y, int width, int height, bool outline = false, 
+                                      int width_line = 1) {
 
         if (((uint)_progress &120) == 0) { return; }
 
@@ -48,7 +48,7 @@ public static partial class Draw {
         if (outline) {
 
             // lt -> rt
-            drawdata = new DrawData(_primitive, x, y, width, 1, 
+            drawdata = new DrawData(_primitive, x, y, width, width_line, 
                                     new Rectangle(0, 0, 1, 1)) { 
                            vx = 0, vy = 0, color = _color
             };
@@ -59,7 +59,7 @@ public static partial class Draw {
             }
 
             // lb -> rb
-            drawdata = new DrawData(_primitive, x, y+height-1, width, 1, 
+            drawdata = new DrawData(_primitive, x, y+height-width_line, width, width_line, 
                                     new Rectangle(0, 0, 1, 1)) { 
                            vx = 0, vy = 0, color = _color
             };
@@ -70,7 +70,7 @@ public static partial class Draw {
             }
 
             // lt -> lb
-            drawdata = new DrawData(_primitive, x, y+1, 1, height-2, 
+            drawdata = new DrawData(_primitive, x, y+width_line, width_line, height-(2*width_line), 
                                     new Rectangle(0, 0, 1, 1)) {
                            vx = 0, vy = 0, color = _color
             };
@@ -81,7 +81,7 @@ public static partial class Draw {
             }
 
             // rt -> rb
-            drawdata = new DrawData(_primitive, x+width-1, y+1, 1, height-2, 
+            drawdata = new DrawData(_primitive, x+width-width_line, y+width_line, width_line, height-(2*width_line), 
                                     new Rectangle(0, 0, 1, 1)) { 
                            vx = 0, vy = 0, color = _color
             };
@@ -241,408 +241,26 @@ public static partial class Draw {
 
     public static void draw_text(float x, float y, string text, 
                                  float xscale = 1f, float yscale = 1f, float angle = 0f) {
-
-        if (((uint)_progress &120) == 0 || text == "" || xscale == 0 || yscale == 0) { return; }
-
-        Texture2D[] array_texture = font_current._texture_font;
-
-        int lspace = (int)float.Floor(yscale*1.375f*font_current.size_font);
-        int cspace = (int)float.Floor(xscale*font_current.size_font*.25f);
-        int lbcount = 0;
-
-        float angle_converted = 0f;
-
-        DrawData drawdata;
-
-        switch (ANGLE_FORMAT) {
-
-            case AngleFormat.RADIAN: { 
-                
-                angle_converted = angle%(2*float.Pi); break;
-            }
-
-            case AngleFormat.DEGREE: {
-
-                angle_converted = (angle/180f*float.Pi)%(2*float.Pi); break;
-            }
-
-            case AngleFormat.LEGACY: {
-
-                angle_converted = (-angle/180f*float.Pi)%(2*float.Pi);
-
-                if (angle_converted < 0) { angle_converted = angle+(2*float.Pi); } break;
-            }
-        }
-
-        float cos = float.Cos(angle_converted);
-        float sin = float.Sin(angle_converted);
-
-        List<float> ldata = [];
-
-        Queue<uint> metadata = [];
-
-        float length = 0f;
-        float height = float.Floor(yscale*font_current.size_font);
-
-        int lbreak = 0;
-
-        foreach (char c in text) {
-
-            if (c == '\n') { 
-                
-                ldata.Add(length);
-                
-                length = 0f;
-                
-                lbreak = lbreak+1;
-
-                height = height+lspace;
-                
-                continue;
-            }
-
-            if (c == ' ') { length = length+cspace; continue; }
-
-            if (!font_current._dict_char_data.TryGetValue(c, out uint value)) {
-
-                length = length+float.Floor(xscale*font_current.size_font);
-
-                metadata.Enqueue(0);
-
-                continue;
-            }
-
-            length = length+float.Floor(xscale*(value>>22&0xff));
-
-            metadata.Enqueue(value); continue;
-        }
-
-        ldata.Add(length);
-
-        float xoffset = x;
-
-        switch (halign) {
-
-            case fa_left:   { xoffset = x; break; }
-
-            case fa_center: { xoffset = x-(ldata[0]/2); break; }
-
-            case fa_right:  { xoffset = x-ldata[0]; break; }
-        }
-
-        float yoffset = y;
-
-        switch (valign) {
-
-            case fa_top:    { yoffset = y; break; }
-
-            case fa_middle: { yoffset = y-(height/2); break; }
-
-            case fa_bottom: { yoffset = y-height; break; }
-        }
-
-        float xpos = x+((cos*(xoffset-x))-(sin*(yoffset-y)));
-        float ypos = y+((sin*(xoffset-x))+(cos*(yoffset-y)));
-
-        foreach (char c in text) {
-
-            if (c == '\n') {
-
-                lbcount = lbcount+1;
-
-                switch (halign) {
-
-                    case fa_left:   { xoffset = x; break; }
-
-                    case fa_center: { xoffset = x-(ldata[lbcount]/2); break; }
-
-                    case fa_right:  { xoffset = x-ldata[lbcount]; break; }
-                }
-
-                switch (valign) {
-
-                    case fa_top:    { yoffset = y+(lbcount*lspace); break; }
-
-                    case fa_middle: { yoffset = y-(height/2)+(lbcount*lspace); break; }
-
-                    case fa_bottom: { yoffset = y-height+(lbcount*lspace); break; }
-                }
-
-                xpos = x+((cos*(xoffset-x))-(sin*(yoffset-y)));
-                ypos = y+((sin*(xoffset-x))+(cos*(yoffset-y)));
-
-                continue;
-            }
-
-            if (c == ' ') { 
-                
-                xpos = xpos+float.Floor(cos*cspace); 
-                ypos = ypos+float.Floor(sin*cspace);
-
-                continue;
-            }
-
-            uint value = metadata.Dequeue();
-
-            if (value == 0) {
-                
-                xpos = xpos+float.Floor(xscale*cos*font_current.size_font);
-                ypos = ypos+float.Floor(xscale*sin*font_current.size_font);
-                
-                continue;
-            }
-
-            // [2]page|[8]width_char|[11]xpos|[11]ypos
-
-            int cwidth = (int)value>>22&0xff;
-
-            Texture2D texture = array_texture[value>>30&0x3];
-
-            int _height = font_current._vmod;
-            
-            if (Font._is_sqr(c)) { _height = (int)font_current.size_font; }
-
-            int vx = xscale > 0? 0: cwidth;
-            int vy = yscale > 0? 0: _height;
-
-            drawdata = new DrawData(texture, xpos, ypos, xscale, yscale,
-                                    new Rectangle((int)(value>>11&0x7ff), 
-                                                  (int)(value&0x7ff), 
-                                                  cwidth, 
-                                                  _height)) {
-                               vx = vx, vy = vy, angle = angle, color = color
-            };
-
-            if (_graphicsDeviceManager.GraphicsDevice.GetRenderTargets().Length != 0) {
-
-                drawdata.Draw();
-            }
-
-            xpos = xpos+(xscale*cos*cwidth);
-            ypos = ypos+(xscale*sin*cwidth);
-        }
-
-        return;
+        
+        _draw_text(x, y, text, -1, xscale, yscale, angle); return;
     }
 
     public static void draw_text_ext(float x, float y, string text, float sep, float w, 
                                      float xscale = 1f, float yscale = 1f, float angle = 0f) {
 
-        if (((uint)_progress &120) == 0 || text == "" || xscale == 0 || yscale == 0) { return; }
+        _draw_text_ext(x, y, text, -1, sep, w, xscale, yscale, angle); return;
+    }
 
-        Texture2D[] array_texture = font_current._texture_font;
+    public static void draw_text_mono(float x, float y, string text, int cwidth,
+                                      float xscale = 1f, float yscale = 1f, float angle = 0f) {
 
-        int cspace = (int)float.Floor(xscale*font_current.size_font*.25f);
-        int lbcount = 0;
+        _draw_text(x, y, text, cwidth, xscale, yscale, angle);
+    }
 
-        float angle_converted = 0f;
+    public static void draw_text_mono_ext(float x, float y, string text, int cwidth, float sep, float w, 
+                                          float xscale = 1f, float yscale = 1f, float angle = 0f) {
 
-        DrawData drawdata;
-
-        switch (ANGLE_FORMAT) {
-
-            case AngleFormat.RADIAN: { 
-                
-                angle_converted = angle%(2*float.Pi); break;
-            }
-
-            case AngleFormat.DEGREE: {
-
-                angle_converted = (angle/180f*float.Pi)%(2*float.Pi); break;
-            }
-
-            case AngleFormat.LEGACY: {
-
-                angle_converted = (-angle/180f*float.Pi)%(2*float.Pi);
-
-                if (angle_converted < 0) { angle_converted = angle+(2*float.Pi); } break;
-            }
-        }
-
-        float cos = float.Cos(angle_converted);
-        float sin = float.Sin(angle_converted);
-
-        List<float> ldata = [];
-
-        Queue<uint> metadata = [];
-
-        float length = 0f;
-        float height = float.Floor(yscale*font_current.size_font);
-
-        int lbreak = 0;
-
-        uint linebreak = 0xc0000000u;
-        uint blank = (uint)(linebreak+array_texture[0].Width);
-
-        foreach (char c in text) {
-
-            if (c == '\n') { 
-                
-                ldata.Add(length);
-                
-                length = 0f;
-                
-                lbreak = lbreak+1;
-
-                height = height+sep;
-                
-                continue;
-            }
-
-            uint vcopy = 0;
-
-            int cwidth = 0;
-
-            if (!font_current._dict_char_data.TryGetValue(c, out uint value)) {
-
-                // if (c == ' ') { length = length+cspace; continue; }
-
-                if (c == ' ') { cwidth = cspace; vcopy = blank; goto LINEBREAK; }
-
-                cwidth = (int)float.Floor(xscale*font_current.size_font);
-
-                // metadata.Enqueue(0);
-
-                vcopy = 0;
-
-                goto LINEBREAK;
-            }
-
-            cwidth = (int)value>>22&0xff;
-            vcopy = value;
-
-            LINEBREAK:
-
-            if (length+cwidth > w) {
-
-                ldata.Add(length);
-                
-                length = 0f;
-                
-                lbreak = lbreak+1;
-
-                height = height+sep;
-
-                metadata.Enqueue(linebreak);
-            }
-
-            length = length+cwidth;
-
-            metadata.Enqueue(vcopy);
-        }
-
-        ldata.Add(length);
-
-        float xoffset = x;
-
-        switch (halign) {
-
-            case fa_left:   { xoffset = x; break; }
-
-            case fa_center: { xoffset = x-(ldata[0]/2); break; }
-
-            case fa_right:  { xoffset = x-ldata[0]; break; }
-        }
-
-        float yoffset = y;
-
-        switch (valign) {
-
-            case fa_top:    { yoffset = y; break; }
-
-            case fa_middle: { yoffset = y-(height/2); break; }
-
-            case fa_bottom: { yoffset = y-height; break; }
-        }
-
-        float xpos = x+((cos*(xoffset-x))-(sin*(yoffset-y)));
-        float ypos = y+((sin*(xoffset-x))+(cos*(yoffset-y)));
-
-        foreach (char c in text) {
-
-            LINEBREAK:
-
-            uint value = metadata.Peek();
-
-            if (value == linebreak || c == '\n') {
-
-                lbcount = lbcount+1;
-
-                switch (halign) {
-
-                    case fa_left:   { xoffset = x; break; }
-
-                    case fa_center: { xoffset = x-(ldata[lbcount]/2); break; }
-
-                    case fa_right:  { xoffset = x-ldata[lbcount]; break; }
-                }
-
-                switch (valign) {
-
-                    case fa_top:    { yoffset = y+(lbcount*sep); break; }
-
-                    case fa_middle: { yoffset = y-(height/2)+(lbcount*sep); break; }
-
-                    case fa_bottom: { yoffset = y-height+(lbcount*sep); break; }
-                }
-
-                xpos = x+((cos*(xoffset-x))-(sin*(yoffset-y)));
-                ypos = y+((sin*(xoffset-x))+(cos*(yoffset-y)));
-
-                if (value == linebreak) { metadata.Dequeue(); goto LINEBREAK; }
-
-                continue;
-            }
-
-            if (c == ' ') { 
-                
-                xpos = xpos+float.Floor(cos*cspace); 
-                ypos = ypos+float.Floor(sin*cspace);
-
-                metadata.Dequeue(); continue;
-            }
-
-            if (value == 0) {
-                
-                xpos = xpos+float.Floor(xscale*cos*font_current.size_font);
-                ypos = ypos+float.Floor(xscale*sin*font_current.size_font);
-                
-                metadata.Dequeue(); continue;
-            }
-
-            // [2]page|[8]width_char|[11]xpos|[11]ypos
-
-            int cwidth = (int)value>>22&0xff;
-
-            Texture2D texture = array_texture[value>>30&0x3];
-
-            int _height = font_current._vmod;
-            
-            if (Font._is_sqr(c)) { _height = (int)font_current.size_font; }
-
-            int vx = xscale > 0? 0: cwidth;
-            int vy = yscale > 0? 0: _height;
-
-            drawdata = new DrawData(texture, xpos, ypos, xscale, yscale,
-                                    new Rectangle((int)(value>>11&0x7ff), 
-                                                  (int)(value&0x7ff), 
-                                                  cwidth, 
-                                                  _height)) {
-                               vx = vx, vy = vy, angle = angle, color = color
-            };
-
-            if (_graphicsDeviceManager.GraphicsDevice.GetRenderTargets().Length != 0) {
-
-                drawdata.Draw();
-            }
-
-            xpos = xpos+(xscale*cos*cwidth);
-            ypos = ypos+(xscale*sin*cwidth);
-
-            metadata.Dequeue();
-        }
-
-        return;
+        _draw_text_ext(x, y, text, cwidth, sep, w, xscale, yscale, angle); return;
     }
 
     public static int string_width(string text) {

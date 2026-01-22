@@ -39,7 +39,7 @@ public partial class View {
     private int _height;
     public int height { get => _height; set { _height = value; _updated = true; } }
 
-    public RenderTarget2D _render_target;
+    internal RenderTarget2D _render_target;
 
     internal bool _updated = false;
 }
