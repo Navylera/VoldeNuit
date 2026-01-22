@@ -21,9 +21,10 @@ public static partial class Draw {
         draw_line(x1, y1, x2, y2, width);
     }
 
-    public static void DrawRectangle(float x, float y, int width, int height, bool outLine = false) {
+    public static void DrawRectangle(float x, float y, int width, int height, bool outLine = false, 
+                                     int lineWidth = 1) {
 
-        draw_rectangle(x, y, width, height, outLine);
+        draw_rectangle(x, y, width, height, outLine, lineWidth);
     }
 
     public static void DrawSprite(Sprite spriteIndex, float imageIndex, float x, float y) {
@@ -32,7 +33,8 @@ public static partial class Draw {
     }
 
     public static void DrawSprite(Sprite spriteIndex, float imageIndex, float x, float y, 
-                                  float xScale, float yScale, float angle, uint color, float alpha) {
+                                  float xScale, float yScale, 
+                                  float angle = 0f, uint color = 0xffffffu, float alpha = 1f) {
 
         draw_sprite_ext(spriteIndex, imageIndex, x, y, xScale, yScale, angle, color, alpha); return;
     }
@@ -46,7 +48,7 @@ public static partial class Draw {
     public static void DrawSpritePart(Sprite spriteIndex, float imageIndex, 
                                       int left, int top, int width, int height, 
                                       float x, float y, float xScale, float yScale, 
-                                      uint color, float alpha) {
+                                      uint color = 0xffffffu, float alpha = 1f) {
 
         draw_sprite_part_ext(spriteIndex, imageIndex, left, top, width, height,
                              x, y, xScale, yScale, color, alpha
@@ -75,9 +77,21 @@ public static partial class Draw {
     }
 
     public static void DrawText(float x, float y, string text, int lineBreakSpace, int maxWidth, 
-                                     float xScale = 1f, float yScale = 1f, float angle = 0f) {
+                                float xScale = 1f, float yScale = 1f, float angle = 0f) {
 
         draw_text_ext(x, y, text, lineBreakSpace, maxWidth, xScale, yScale, angle);
+    }
+
+    public static void DrawTextMono(float x, float y, string text, int cWidth,
+                                    float xScale = 1f, float yScale = 1f, float angle = 0f) {
+
+        draw_text_mono(x, y, text, cWidth, xScale, yScale, angle);
+    }
+
+    public static void DrawTextMono(float x, float y, string text, int cWidth, int lineBreakSpace, int maxWidth, 
+                                    float xScale = 1f, float yScale = 1f, float angle = 0f) {
+
+        draw_text_mono_ext(x, y, text, cWidth, lineBreakSpace, maxWidth, xScale, yScale, angle);
     }
 
     public static int GetStringWidth(string text) {
@@ -96,7 +110,8 @@ public static partial class Draw {
     }
 
     public static void DrawTexture(Texture2D texture, float x, float y,
-                                   float xScale, float yScale, int vx, int vy, float angle, uint color, float alpha) {
+                                   float xScale, float yScale, int vx, int vy, 
+                                   float angle = 0f, uint color = 0xffffffu, float alpha = 1f) {
 
         draw_texture_ext(texture, x, y, xScale, yScale, vx, vy, angle, color, alpha);
     }
@@ -109,9 +124,9 @@ public static partial class Draw {
 
     public static void DrawTexturePart(Texture2D texture,
                                        int left, int top, int width, int height, 
-                                       float x, float y, float xscale, float yscale, 
-                                       uint color, float alpha) {
+                                       float x, float y, float xXcale, float yScale, 
+                                       uint color = 0xffffffu, float alpha = 1f) {
 
-        draw_texture_part_ext(texture, left, top, width, height, x, y, xscale, yscale, color, alpha);
+        draw_texture_part_ext(texture, left, top, width, height, x, y, xXcale, yScale, color, alpha);
     }
 }
