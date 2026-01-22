@@ -237,7 +237,7 @@ internal class I_Splash: Instance {
         
         draw_set_color(_entry.tcolor);
 
-        draw_rectangle(x-(120*scale), y+(50*scale), 240*scale, 14*scale, true);
+        draw_rectangle(x-(120*scale), y+(50*scale), 240*scale, 14*scale, true, scale);
 
         int progress = 240;
 
@@ -277,7 +277,7 @@ internal class I_Splash: Instance {
         draw_set_halign(fa_right);
 
         draw_set_color(_entry.tcolor);
-        draw_text((room_width-10)*scale, (room_height-35)*scale, $"VoldeNuit Framework v.{version}\nhttps://github.com/Navylera/VoldeNuit", scale, scale);
+        draw_text(room_width-(10*scale), room_height-(35*scale), $"VoldeNuit Framework v.{version}\nhttps://github.com/Navylera/VoldeNuit", xscale:scale, yscale:scale);
 
         int block = room_width/20;
         
